@@ -1,0 +1,174 @@
+<h2>DigiKhata Clone — Complete App Map</h2>
+<p class="subtitle">Everything we're building, organized by module. Confirm this matches what you want.</p>
+
+<style>
+  .module-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin: 20px 0; }
+  .module-card { background: #fff; border: 2px solid #eee; border-radius: 10px; padding: 14px; }
+  .module-card.done { border-color: #22c55e; background: #f0fdf4; }
+  .module-card.phase1 { border-color: #E74425; background: #fff8f7; }
+  .module-card.phase2 { border-color: #f59e0b; background: #fffbeb; }
+  .module-card.phase3 { border-color: #3b82f6; background: #eff6ff; }
+  .module-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+  .module-features { font-size: 11px; color: #555; line-height: 1.7; }
+  .badge { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600; }
+  .badge-done { background: #22c55e; color: white; }
+  .badge-p1 { background: #E74425; color: white; }
+  .badge-p2 { background: #f59e0b; color: white; }
+  .badge-p3 { background: #3b82f6; color: white; }
+
+  .nav-diagram { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .nav-item { background: #E74425; color: white; border-radius: 8px; padding: 8px 16px; font-size: 12px; font-weight: 600; text-align: center; }
+  .nav-item.secondary { background: #fff; color: #E74425; border: 2px solid #E74425; }
+
+  .legend { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+</style>
+
+<div class="legend">
+  <div class="legend-item"><div class="dot" style="background:#22c55e"></div> Already built (Kharcha Book)</div>
+  <div class="legend-item"><div class="dot" style="background:#E74425"></div> Phase 1 — Core Ledger</div>
+  <div class="legend-item"><div class="dot" style="background:#f59e0b"></div> Phase 2 — Business Tools</div>
+  <div class="legend-item"><div class="dot" style="background:#3b82f6"></div> Phase 3 — Staff & Sync</div>
+</div>
+
+<h3>Navigation Structure</h3>
+<div class="nav-diagram">
+  <div class="nav-item">☰ Drawer<br><span style="font-size:10px;opacity:0.8">Books list</span></div>
+  <div class="nav-item">🏠 Home<br><span style="font-size:10px;opacity:0.8">Customers</span></div>
+  <div class="nav-item secondary">💵 Cash<br><span style="font-size:10px;opacity:0.8">Register</span></div>
+  <div class="nav-item secondary">📦 Stock<br><span style="font-size:10px;opacity:0.8">Inventory</span></div>
+  <div class="nav-item secondary">🧾 Bills<br><span style="font-size:10px;opacity:0.8">Invoices</span></div>
+  <div class="nav-item secondary">💸 Expense<br><span style="font-size:10px;opacity:0.8">Tracker</span></div>
+  <div class="nav-item secondary">👥 Staff<br><span style="font-size:10px;opacity:0.8">Manager</span></div>
+</div>
+
+<h3>All Modules</h3>
+<div class="module-grid">
+
+  <div class="module-card done">
+    <div class="module-title">🏠 Customer Ledger <span class="badge badge-done">DONE</span></div>
+    <div class="module-features">
+      • Add customers & suppliers<br>
+      • Give / Got transactions<br>
+      • Balance per customer<br>
+      • WhatsApp share<br>
+      • PDF download
+    </div>
+  </div>
+
+  <div class="module-card done">
+    <div class="module-title">📚 Books <span class="badge badge-done">DONE</span></div>
+    <div class="module-features">
+      • Multiple books<br>
+      • Per-book currency<br>
+      • Theme color per book<br>
+      • Drawer navigation
+    </div>
+  </div>
+
+  <div class="module-card phase1">
+    <div class="module-title">📸 Photo Receipts <span class="badge badge-p1">Phase 1</span></div>
+    <div class="module-features">
+      • Camera / gallery picker<br>
+      • Attach image to any transaction<br>
+      • View receipt in detail screen
+    </div>
+  </div>
+
+  <div class="module-card phase1">
+    <div class="module-title">🔔 SMS Reminders <span class="badge badge-p1">Phase 1</span></div>
+    <div class="module-features">
+      • Schedule reminder to customer<br>
+      • Custom message template<br>
+      • Send via SMS or WhatsApp
+    </div>
+  </div>
+
+  <div class="module-card phase1">
+    <div class="module-title">🔍 Search & Filters <span class="badge badge-p1">Phase 1</span></div>
+    <div class="module-features">
+      • Search customers by name<br>
+      • Filter transactions by date<br>
+      • Filter by type (gave/got)
+    </div>
+  </div>
+
+  <div class="module-card phase1">
+    <div class="module-title">🏦 Supplier Ledger <span class="badge badge-p1">Phase 1</span></div>
+    <div class="module-features">
+      • Separate supplier tab<br>
+      • Purchase / Payment transactions<br>
+      • Same ledger UI, different type
+    </div>
+  </div>
+
+  <div class="module-card phase2">
+    <div class="module-title">💵 Cash Register <span class="badge badge-p2">Phase 2</span></div>
+    <div class="module-features">
+      • Daily cash in / out log<br>
+      • Custom categories<br>
+      • Receipt photos<br>
+      • Daily / monthly summary
+    </div>
+  </div>
+
+  <div class="module-card phase2">
+    <div class="module-title">🧾 Invoice / Bills <span class="badge badge-p2">Phase 2</span></div>
+    <div class="module-features">
+      • Create bill with line items<br>
+      • Tax, discount, advance<br>
+      • Custom PDF (logo, color)<br>
+      • Mark as paid / pending<br>
+      • Send via WhatsApp
+    </div>
+  </div>
+
+  <div class="module-card phase2">
+    <div class="module-title">📦 Inventory / Stock <span class="badge badge-p2">Phase 2</span></div>
+    <div class="module-features">
+      • Product catalog<br>
+      • Cost price / sell price<br>
+      • Stock in / out<br>
+      • Low stock alerts<br>
+      • Categories & SKU
+    </div>
+  </div>
+
+  <div class="module-card phase2">
+    <div class="module-title">💸 Expense Tracker <span class="badge badge-p2">Phase 2</span></div>
+    <div class="module-features">
+      • Business expenses<br>
+      • Custom categories<br>
+      • Receipt photos<br>
+      • Monthly reports
+    </div>
+  </div>
+
+  <div class="module-card phase3">
+    <div class="module-title">👥 Staff Manager <span class="badge badge-p3">Phase 3</span></div>
+    <div class="module-features">
+      • Employee profiles<br>
+      • Daily attendance<br>
+      • Overtime tracking<br>
+      • Salary slips (PDF)
+    </div>
+  </div>
+
+  <div class="module-card phase3">
+    <div class="module-title">☁️ Cloud Sync <span class="badge badge-p3">Phase 3</span></div>
+    <div class="module-features">
+      • Firebase Firestore sync<br>
+      • Phone OTP login<br>
+      • Multi-device access<br>
+      • Background sync
+    </div>
+  </div>
+
+</div>
+
+<div style="background:#fff8f7; border:2px solid #E74425; border-radius:10px; padding:16px; margin-top:16px;">
+  <strong style="color:#E74425;">Color Scheme:</strong> DigiKhata red <code>#E74425</code> replaces current navy/emerald. All screens, buttons, and accents use this palette.
+</div>
+
+<p style="margin-top: 20px; font-size: 13px; color: #666;">Does this match what you want to build? We'll spec and plan Phase 1 first, then work through each phase.</p>
