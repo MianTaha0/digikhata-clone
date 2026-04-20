@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="digi_red">#E74425</color>
+    <color name="digi_red_dark">#C73510</color>
+    <color name="digi_green">#2E7D32</color>
+    <color name="digi_error">#B00020</color>
+    <color name="digi_bg">#F5F5F5</color>
+    <color name="digi_surface">#FFFFFF</color>
+    <color name="digi_on_surface">#212121</color>
+    <color name="digi_on_surface_variant">#757575</color>
+    <color name="digi_outline">#E0E0E0</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
