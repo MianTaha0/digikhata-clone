@@ -1,9 +1,11 @@
 package com.digikhata.domain.repository
 
 import com.digikhata.data.entity.Business
+import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
 import com.digikhata.data.entity.TxEntity
+import com.digikhata.domain.model.CashTotals
 import kotlinx.coroutines.flow.Flow
 
 interface DigiRepository {
@@ -27,4 +29,11 @@ interface DigiRepository {
     val notifications: Flow<List<DigiNotification>>
     suspend fun addNotification(notification: DigiNotification): Long
     suspend fun markNotificationSeen(id: Long)
+
+    fun cashEntries(businessId: Long, from: Long, to: Long): Flow<List<CashEntry>>
+    fun cashTotals(businessId: Long, from: Long, to: Long): Flow<CashTotals>
+    fun getCashEntry(id: Long): Flow<CashEntry?>
+    suspend fun addCashEntry(entry: CashEntry, imagePath: String?): Long
+    suspend fun updateCashEntry(entry: CashEntry)
+    suspend fun deleteCashEntry(entry: CashEntry)
 }

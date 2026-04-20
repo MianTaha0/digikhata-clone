@@ -41,6 +41,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.digikhata.ui.book.BookSettingsScreen
 import com.digikhata.ui.book.CreateBookScreen
+import com.digikhata.ui.cash.CashEntryDetailScreen
+import com.digikhata.ui.cash.CashRegisterScreen
 import com.digikhata.ui.detail.ClientDetailScreen
 import com.digikhata.ui.drawer.DrawerContent
 import com.digikhata.ui.home.HomeScreen
@@ -82,7 +84,7 @@ fun DigiApp() {
 
     val tabs = listOf(
         BottomTab(Routes.HOME, "Home", Icons.Default.Home),
-        BottomTab(Routes.comingSoon("Cash"), "Cash", Icons.Default.AccountBalanceWallet),
+        BottomTab(Routes.CASH, "Cash", Icons.Default.AccountBalanceWallet),
         BottomTab(Routes.comingSoon("Stock"), "Stock", Icons.Default.Inventory2),
         BottomTab(Routes.comingSoon("Bills"), "Bills", Icons.Default.Receipt),
         BottomTab(Routes.comingSoon("Expense"), "Expense", Icons.Default.Description),
@@ -90,6 +92,7 @@ fun DigiApp() {
 
     val showChrome = currentRoute == Routes.HOME ||
             currentRoute == Routes.SUPPLIER ||
+            currentRoute == Routes.CASH ||
             currentRoute?.startsWith("comingSoon/") == true
 
     ModalNavigationDrawer(
@@ -217,6 +220,15 @@ fun DigiApp() {
                 ) { entry ->
                     val label = entry.arguments?.getString("label") ?: "Coming Soon"
                     ComingSoonScreen(label = label)
+                }
+                composable(Routes.CASH) {
+                    CashRegisterScreen(navController = navController)
+                }
+                composable(
+                    Routes.CASH_ENTRY_DETAIL_PATTERN,
+                    arguments = listOf(navArgument("entryId") { type = NavType.LongType })
+                ) {
+                    CashEntryDetailScreen(navController = navController)
                 }
             }
         }

@@ -1,18 +1,22 @@
 package com.digikhata.data.repository
 
 import com.digikhata.data.dao.BusinessDao
+import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
 import com.digikhata.data.entity.Business
+import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
+import com.digikhata.domain.model.CashTotals
 import com.digikhata.domain.repository.DigiRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,7 +26,8 @@ class DigiRepositoryImpl @Inject constructor(
     private val clientDao: ClientDao,
     private val transactionDao: TransactionDao,
     private val transactionImageDao: TransactionImageDao,
-    private val notificationDao: NotificationDao
+    private val notificationDao: NotificationDao,
+    private val cashEntryDao: CashEntryDao
 ) : DigiRepository {
 
     override val businesses: Flow<List<Business>> = businessDao.getAll()
@@ -91,4 +96,32 @@ class DigiRepositoryImpl @Inject constructor(
         notificationDao.insert(notification)
 
     override suspend fun markNotificationSeen(id: Long) = notificationDao.markSeen(id)
+
+    override fun cashEntries(businessId: Long, from: Long, to: Long): Flow<List<CashEntry>> =
+        cashEntryDao.getInRange(businessId, from, to)
+
+    override fun cashTotals(businessId: Long, from: Long, to: Long): Flow<CashTotals> =
+        cashEntryDao.totalsForPeriod(businessId, from, to)
+
+    override fun getCashEntry(id: Long): Flow<CashEntry?> = cashEntryDao.getById(id)
+
+    override suspend fun addCashEntry(entry: CashEntry, imagePath: String?): Long {
+        val now = System.currentTimeMillis()
+        val prepared = entry.copy(
+            createdAt = if (entry.createdAt == 0L) now else entry.createdAt,
+            updatedAt = if (entry.updatedAt == 0L) now else entry.updatedAt,
+            imageLocalPath = imagePath ?: entry.imageLocalPath
+        )
+        return cashEntryDao.insert(prepared)
+    }
+
+    override suspend fun updateCashEntry(entry: CashEntry) =
+        cashEntryDao.update(entry.copy(updatedAt = System.currentTimeMillis()))
+
+    override suspend fun deleteCashEntry(entry: CashEntry) {
+        cashEntryDao.delete(entry)
+        entry.imageLocalPath?.let { path ->
+            runCatching { File(path).delete() }
+        }
+    }
 }

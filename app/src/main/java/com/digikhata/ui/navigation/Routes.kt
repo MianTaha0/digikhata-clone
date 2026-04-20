@@ -9,8 +9,11 @@ object Routes {
     const val BOOK_SETTINGS = "bookSettings/{bookId}"
     const val CLIENT_DETAIL = "clientDetail/{clientId}"
     const val COMING_SOON = "comingSoon/{label}"
+    const val CASH = "cash"
+    const val CASH_ENTRY_DETAIL_PATTERN = "cashEntryDetail/{entryId}"
 
     fun bookSettings(bookId: Long) = "bookSettings/$bookId"
     fun clientDetail(clientId: Long) = "clientDetail/$clientId"
     fun comingSoon(label: String) = "comingSoon/$label"
+    fun cashEntryDetail(id: Long) = "cashEntryDetail/$id"
 }

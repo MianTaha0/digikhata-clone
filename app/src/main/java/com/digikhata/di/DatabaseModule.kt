@@ -3,7 +3,9 @@ package com.digikhata.di
 import android.content.Context
 import androidx.room.Room
 import com.digikhata.data.DigiDatabase
+import com.digikhata.data.MIGRATION_1_2
 import com.digikhata.data.dao.BusinessDao
+import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
@@ -23,6 +25,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): DigiDatabase =
         Room.databaseBuilder(context, DigiDatabase::class.java, "digikhata.db")
+            .addMigrations(MIGRATION_1_2)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -31,4 +34,5 @@ object DatabaseModule {
     @Provides fun provideTransactionDao(db: DigiDatabase): TransactionDao = db.transactionDao()
     @Provides fun provideTransactionImageDao(db: DigiDatabase): TransactionImageDao = db.transactionImageDao()
     @Provides fun provideNotificationDao(db: DigiDatabase): NotificationDao = db.notificationDao()
+    @Provides fun provideCashEntryDao(db: DigiDatabase): CashEntryDao = db.cashEntryDao()
 }
