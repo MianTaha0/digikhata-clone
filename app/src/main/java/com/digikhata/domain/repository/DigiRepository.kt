@@ -4,6 +4,7 @@ import com.digikhata.data.entity.Business
 import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
+import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
 import kotlinx.coroutines.flow.Flow
@@ -36,4 +37,11 @@ interface DigiRepository {
     suspend fun addCashEntry(entry: CashEntry, imagePath: String?): Long
     suspend fun updateCashEntry(entry: CashEntry)
     suspend fun deleteCashEntry(entry: CashEntry)
+
+    fun expenses(businessId: Long, from: Long, to: Long): Flow<List<ExpenseEntry>>
+    fun expenseTotal(businessId: Long, from: Long, to: Long): Flow<Double>
+    fun getExpense(id: Long): Flow<ExpenseEntry?>
+    suspend fun addExpense(entry: ExpenseEntry, imagePath: String?): Long
+    suspend fun updateExpense(entry: ExpenseEntry)
+    suspend fun deleteExpense(entry: ExpenseEntry)
 }

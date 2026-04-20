@@ -43,6 +43,8 @@ import com.digikhata.ui.book.BookSettingsScreen
 import com.digikhata.ui.book.CreateBookScreen
 import com.digikhata.ui.cash.CashEntryDetailScreen
 import com.digikhata.ui.cash.CashRegisterScreen
+import com.digikhata.ui.expense.ExpenseDetailScreen
+import com.digikhata.ui.expense.ExpenseScreen
 import com.digikhata.ui.detail.ClientDetailScreen
 import com.digikhata.ui.drawer.DrawerContent
 import com.digikhata.ui.home.HomeScreen
@@ -87,12 +89,13 @@ fun DigiApp() {
         BottomTab(Routes.CASH, "Cash", Icons.Default.AccountBalanceWallet),
         BottomTab(Routes.comingSoon("Stock"), "Stock", Icons.Default.Inventory2),
         BottomTab(Routes.comingSoon("Bills"), "Bills", Icons.Default.Receipt),
-        BottomTab(Routes.comingSoon("Expense"), "Expense", Icons.Default.Description),
+        BottomTab(Routes.EXPENSE, "Expense", Icons.Default.Description),
     )
 
     val showChrome = currentRoute == Routes.HOME ||
             currentRoute == Routes.SUPPLIER ||
             currentRoute == Routes.CASH ||
+            currentRoute == Routes.EXPENSE ||
             currentRoute?.startsWith("comingSoon/") == true
 
     ModalNavigationDrawer(
@@ -229,6 +232,15 @@ fun DigiApp() {
                     arguments = listOf(navArgument("entryId") { type = NavType.LongType })
                 ) {
                     CashEntryDetailScreen(navController = navController)
+                }
+                composable(Routes.EXPENSE) {
+                    ExpenseScreen(navController = navController)
+                }
+                composable(
+                    Routes.EXPENSE_DETAIL_PATTERN,
+                    arguments = listOf(navArgument("entryId") { type = NavType.LongType })
+                ) {
+                    ExpenseDetailScreen(navController = navController)
                 }
             }
         }

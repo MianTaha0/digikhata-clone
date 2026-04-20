@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
+import com.digikhata.data.dao.ExpenseEntryDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -12,6 +13,7 @@ import com.digikhata.data.entity.Business
 import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
+import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
 
@@ -22,9 +24,10 @@ import com.digikhata.data.entity.TxEntity
         TxEntity::class,
         TransactionImage::class,
         DigiNotification::class,
-        CashEntry::class
+        CashEntry::class,
+        ExpenseEntry::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class DigiDatabase : RoomDatabase() {
@@ -34,4 +37,5 @@ abstract class DigiDatabase : RoomDatabase() {
     abstract fun transactionImageDao(): TransactionImageDao
     abstract fun notificationDao(): NotificationDao
     abstract fun cashEntryDao(): CashEntryDao
+    abstract fun expenseEntryDao(): ExpenseEntryDao
 }

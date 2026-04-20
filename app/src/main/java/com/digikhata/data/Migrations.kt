@@ -3,6 +3,26 @@ package com.digikhata.data
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+val MIGRATION_2_3: Migration = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `expense_entries` (" +
+                    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    "`businessId` INTEGER NOT NULL, " +
+                    "`amount` REAL NOT NULL, " +
+                    "`category` TEXT NOT NULL, " +
+                    "`paymentMethod` TEXT NOT NULL, " +
+                    "`note` TEXT, " +
+                    "`entryDate` INTEGER NOT NULL, " +
+                    "`imageLocalPath` TEXT, " +
+                    "`createdAt` INTEGER NOT NULL, " +
+                    "`updatedAt` INTEGER NOT NULL, " +
+                    "FOREIGN KEY(`businessId`) REFERENCES `businesses`(`id`) ON DELETE CASCADE)"
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_expense_entries_businessId` ON `expense_entries` (`businessId`)")
+    }
+}
+
 val MIGRATION_1_2: Migration = object : Migration(1, 2) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(

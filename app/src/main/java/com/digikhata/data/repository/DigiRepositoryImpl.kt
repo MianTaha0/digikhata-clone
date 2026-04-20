@@ -3,6 +3,7 @@ package com.digikhata.data.repository
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
+import com.digikhata.data.dao.ExpenseEntryDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -10,6 +11,7 @@ import com.digikhata.data.entity.Business
 import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
+import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
@@ -27,7 +29,8 @@ class DigiRepositoryImpl @Inject constructor(
     private val transactionDao: TransactionDao,
     private val transactionImageDao: TransactionImageDao,
     private val notificationDao: NotificationDao,
-    private val cashEntryDao: CashEntryDao
+    private val cashEntryDao: CashEntryDao,
+    private val expenseEntryDao: ExpenseEntryDao
 ) : DigiRepository {
 
     override val businesses: Flow<List<Business>> = businessDao.getAll()
@@ -120,6 +123,34 @@ class DigiRepositoryImpl @Inject constructor(
 
     override suspend fun deleteCashEntry(entry: CashEntry) {
         cashEntryDao.delete(entry)
+        entry.imageLocalPath?.let { path ->
+            runCatching { File(path).delete() }
+        }
+    }
+
+    override fun expenses(businessId: Long, from: Long, to: Long): Flow<List<ExpenseEntry>> =
+        expenseEntryDao.getInRange(businessId, from, to)
+
+    override fun expenseTotal(businessId: Long, from: Long, to: Long): Flow<Double> =
+        expenseEntryDao.totalForPeriod(businessId, from, to)
+
+    override fun getExpense(id: Long): Flow<ExpenseEntry?> = expenseEntryDao.getById(id)
+
+    override suspend fun addExpense(entry: ExpenseEntry, imagePath: String?): Long {
+        val now = System.currentTimeMillis()
+        val prepared = entry.copy(
+            createdAt = if (entry.createdAt == 0L) now else entry.createdAt,
+            updatedAt = if (entry.updatedAt == 0L) now else entry.updatedAt,
+            imageLocalPath = imagePath ?: entry.imageLocalPath
+        )
+        return expenseEntryDao.insert(prepared)
+    }
+
+    override suspend fun updateExpense(entry: ExpenseEntry) =
+        expenseEntryDao.update(entry.copy(updatedAt = System.currentTimeMillis()))
+
+    override suspend fun deleteExpense(entry: ExpenseEntry) {
+        expenseEntryDao.delete(entry)
         entry.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
