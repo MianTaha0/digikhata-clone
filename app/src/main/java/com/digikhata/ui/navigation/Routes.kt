@@ -13,10 +13,16 @@ object Routes {
     const val CASH_ENTRY_DETAIL_PATTERN = "cashEntryDetail/{entryId}"
     const val EXPENSE = "expense"
     const val EXPENSE_DETAIL_PATTERN = "expenseDetail/{entryId}"
+    const val INVOICES = "invoices"
+    const val INVOICE_CREATE = "invoiceCreate"
+    const val INVOICE_EDIT_PATTERN = "invoiceEdit/{invoiceId}"
+    const val INVOICE_DETAIL_PATTERN = "invoiceDetail/{invoiceId}"
 
     fun bookSettings(bookId: Long) = "bookSettings/$bookId"
     fun clientDetail(clientId: Long) = "clientDetail/$clientId"
     fun comingSoon(label: String) = "comingSoon/$label"
     fun cashEntryDetail(id: Long) = "cashEntryDetail/$id"
     fun expenseDetail(id: Long) = "expenseDetail/$id"
+    fun invoiceEdit(id: Long) = "invoiceEdit/$id"
+    fun invoiceDetail(id: Long) = "invoiceDetail/$id"
 }

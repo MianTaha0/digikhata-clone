@@ -5,10 +5,13 @@ import androidx.room.Room
 import com.digikhata.data.DigiDatabase
 import com.digikhata.data.MIGRATION_1_2
 import com.digikhata.data.MIGRATION_2_3
+import com.digikhata.data.MIGRATION_3_4
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
 import com.digikhata.data.dao.ExpenseEntryDao
+import com.digikhata.data.dao.InvoiceDao
+import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -27,7 +30,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): DigiDatabase =
         Room.databaseBuilder(context, DigiDatabase::class.java, "digikhata.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -38,4 +41,6 @@ object DatabaseModule {
     @Provides fun provideNotificationDao(db: DigiDatabase): NotificationDao = db.notificationDao()
     @Provides fun provideCashEntryDao(db: DigiDatabase): CashEntryDao = db.cashEntryDao()
     @Provides fun provideExpenseEntryDao(db: DigiDatabase): ExpenseEntryDao = db.expenseEntryDao()
+    @Provides fun provideInvoiceDao(db: DigiDatabase): InvoiceDao = db.invoiceDao()
+    @Provides fun provideInvoiceItemDao(db: DigiDatabase): InvoiceItemDao = db.invoiceItemDao()
 }

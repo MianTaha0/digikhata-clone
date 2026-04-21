@@ -2,5 +2,6 @@
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-files-path name="receipts" path="receipts/" />
     <external-files-path name="images" path="images/" />
+    <external-files-path name="documents" path="Documents/" />
     <cache-path name="cache" path="." />
 </paths>

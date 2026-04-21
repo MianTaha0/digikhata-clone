@@ -17,6 +17,7 @@ data class Business(
     val category: String? = null,
     val tagline: String? = null,
     val logoLocalPath: String? = null,
+    val invoicePrefix: String = "INV-",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 )

@@ -45,6 +45,9 @@ import com.digikhata.ui.cash.CashEntryDetailScreen
 import com.digikhata.ui.cash.CashRegisterScreen
 import com.digikhata.ui.expense.ExpenseDetailScreen
 import com.digikhata.ui.expense.ExpenseScreen
+import com.digikhata.ui.invoice.CreateEditInvoiceScreen
+import com.digikhata.ui.invoice.InvoiceDetailScreen
+import com.digikhata.ui.invoice.InvoiceListScreen
 import com.digikhata.ui.detail.ClientDetailScreen
 import com.digikhata.ui.drawer.DrawerContent
 import com.digikhata.ui.home.HomeScreen
@@ -88,7 +91,7 @@ fun DigiApp() {
         BottomTab(Routes.HOME, "Home", Icons.Default.Home),
         BottomTab(Routes.CASH, "Cash", Icons.Default.AccountBalanceWallet),
         BottomTab(Routes.comingSoon("Stock"), "Stock", Icons.Default.Inventory2),
-        BottomTab(Routes.comingSoon("Bills"), "Bills", Icons.Default.Receipt),
+        BottomTab(Routes.INVOICES, "Bills", Icons.Default.Receipt),
         BottomTab(Routes.EXPENSE, "Expense", Icons.Default.Description),
     )
 
@@ -96,6 +99,7 @@ fun DigiApp() {
             currentRoute == Routes.SUPPLIER ||
             currentRoute == Routes.CASH ||
             currentRoute == Routes.EXPENSE ||
+            currentRoute == Routes.INVOICES ||
             currentRoute?.startsWith("comingSoon/") == true
 
     ModalNavigationDrawer(
@@ -241,6 +245,24 @@ fun DigiApp() {
                     arguments = listOf(navArgument("entryId") { type = NavType.LongType })
                 ) {
                     ExpenseDetailScreen(navController = navController)
+                }
+                composable(Routes.INVOICES) {
+                    InvoiceListScreen(navController = navController)
+                }
+                composable(Routes.INVOICE_CREATE) {
+                    CreateEditInvoiceScreen(navController = navController)
+                }
+                composable(
+                    Routes.INVOICE_EDIT_PATTERN,
+                    arguments = listOf(navArgument("invoiceId") { type = NavType.LongType })
+                ) {
+                    CreateEditInvoiceScreen(navController = navController)
+                }
+                composable(
+                    Routes.INVOICE_DETAIL_PATTERN,
+                    arguments = listOf(navArgument("invoiceId") { type = NavType.LongType })
+                ) {
+                    InvoiceDetailScreen(navController = navController)
                 }
             }
         }

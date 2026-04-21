@@ -1,9 +1,13 @@
 package com.digikhata.data.repository
 
+import androidx.room.withTransaction
+import com.digikhata.data.DigiDatabase
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
 import com.digikhata.data.dao.ExpenseEntryDao
+import com.digikhata.data.dao.InvoiceDao
+import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -12,11 +16,15 @@ import com.digikhata.data.entity.CashEntry
 import com.digikhata.data.entity.Client
 import com.digikhata.data.entity.DigiNotification
 import com.digikhata.data.entity.ExpenseEntry
+import com.digikhata.data.entity.Invoice
+import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
 import com.digikhata.domain.repository.DigiRepository
+import com.digikhata.util.InvoiceCalc
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.io.File
 import javax.inject.Inject
@@ -30,7 +38,10 @@ class DigiRepositoryImpl @Inject constructor(
     private val transactionImageDao: TransactionImageDao,
     private val notificationDao: NotificationDao,
     private val cashEntryDao: CashEntryDao,
-    private val expenseEntryDao: ExpenseEntryDao
+    private val expenseEntryDao: ExpenseEntryDao,
+    private val invoiceDao: InvoiceDao,
+    private val invoiceItemDao: InvoiceItemDao,
+    private val db: DigiDatabase
 ) : DigiRepository {
 
     override val businesses: Flow<List<Business>> = businessDao.getAll()
@@ -154,5 +165,50 @@ class DigiRepositoryImpl @Inject constructor(
         entry.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
+    }
+
+    override fun invoices(businessId: Long): Flow<List<Invoice>> =
+        invoiceDao.getByBusiness(businessId)
+
+    override fun getInvoice(id: Long): Flow<Invoice?> = invoiceDao.getById(id)
+
+    override fun invoiceItems(invoiceId: Long): Flow<List<InvoiceItem>> =
+        invoiceItemDao.getByInvoice(invoiceId)
+
+    override fun recentItemNames(businessId: Long): Flow<List<String>> =
+        invoiceDao.recentItemNames(businessId)
+
+    override suspend fun nextInvoiceSequence(businessId: Long): Int =
+        invoiceDao.nextSequenceNumber(businessId)
+
+    override suspend fun saveInvoice(inv: Invoice, items: List<InvoiceItem>): Long {
+        return db.withTransaction {
+            val now = System.currentTimeMillis()
+            val id = if (inv.id == 0L) {
+                val seq = invoiceDao.nextSequenceNumber(inv.businessId)
+                val newInv = inv.copy(sequenceNumber = seq, createdAt = now, updatedAt = now)
+                invoiceDao.insertInvoice(newInv)
+            } else {
+                invoiceDao.updateInvoice(inv.copy(updatedAt = now))
+                invoiceItemDao.deleteByInvoice(inv.id)
+                inv.id
+            }
+            invoiceItemDao.insertAll(
+                items.mapIndexed { idx, it -> it.copy(id = 0, invoiceId = id, sortOrder = idx) }
+            )
+            id
+        }
+    }
+
+    override suspend fun recordPayment(invoiceId: Long, amount: Double) {
+        val inv = invoiceDao.getById(invoiceId).first() ?: return
+        val items = invoiceItemDao.getByInvoice(invoiceId).first()
+        val totals = InvoiceCalc.compute(inv, items)
+        val newPaid = (inv.amountPaid + amount).coerceAtMost(totals.grandTotal)
+        invoiceDao.updateInvoice(inv.copy(amountPaid = newPaid, updatedAt = System.currentTimeMillis()))
+    }
+
+    override suspend fun deleteInvoice(inv: Invoice) {
+        invoiceDao.deleteInvoice(inv)
     }
 }
