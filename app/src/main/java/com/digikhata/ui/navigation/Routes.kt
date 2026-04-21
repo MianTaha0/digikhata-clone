@@ -17,7 +17,10 @@ object Routes {
     const val INVOICE_CREATE = "invoiceCreate"
     const val INVOICE_EDIT_PATTERN = "invoiceEdit/{invoiceId}"
     const val INVOICE_DETAIL_PATTERN = "invoiceDetail/{invoiceId}"
+    const val INVENTORY = "inventory"
+    const val PRODUCT_DETAIL_PATTERN = "productDetail/{productId}"
 
+    fun productDetail(id: Long) = "productDetail/$id"
     fun bookSettings(bookId: Long) = "bookSettings/$bookId"
     fun clientDetail(clientId: Long) = "clientDetail/$clientId"
     fun comingSoon(label: String) = "comingSoon/$label"

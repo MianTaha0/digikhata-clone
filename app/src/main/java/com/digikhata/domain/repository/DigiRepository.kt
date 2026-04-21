@@ -7,6 +7,8 @@ import com.digikhata.data.entity.DigiNotification
 import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
+import com.digikhata.data.entity.Product
+import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
 import kotlinx.coroutines.flow.Flow
@@ -55,4 +57,15 @@ interface DigiRepository {
     suspend fun saveInvoice(inv: Invoice, items: List<InvoiceItem>): Long
     suspend fun recordPayment(invoiceId: Long, amount: Double)
     suspend fun deleteInvoice(inv: Invoice)
+
+    fun products(businessId: Long): Flow<List<Product>>
+    fun getProduct(id: Long): Flow<Product?>
+    fun productMovements(productId: Long): Flow<List<StockMovement>>
+    fun inventoryItemCount(businessId: Long): Flow<Int>
+    fun inventoryTotalValue(businessId: Long): Flow<Double>
+    fun lowStockCount(businessId: Long): Flow<Int>
+    suspend fun addProduct(product: Product, imagePath: String?): Long
+    suspend fun updateProduct(product: Product)
+    suspend fun deleteProduct(product: Product)
+    suspend fun adjustStock(productId: Long, delta: Double, reason: String?)
 }

@@ -9,6 +9,8 @@ import com.digikhata.data.dao.ExpenseEntryDao
 import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
+import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StockMovementDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
 import com.digikhata.data.entity.Business
@@ -18,6 +20,8 @@ import com.digikhata.data.entity.DigiNotification
 import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
+import com.digikhata.data.entity.Product
+import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
@@ -41,6 +45,8 @@ class DigiRepositoryImpl @Inject constructor(
     private val expenseEntryDao: ExpenseEntryDao,
     private val invoiceDao: InvoiceDao,
     private val invoiceItemDao: InvoiceItemDao,
+    private val productDao: ProductDao,
+    private val stockMovementDao: StockMovementDao,
     private val db: DigiDatabase
 ) : DigiRepository {
 
@@ -210,5 +216,63 @@ class DigiRepositoryImpl @Inject constructor(
 
     override suspend fun deleteInvoice(inv: Invoice) {
         invoiceDao.deleteInvoice(inv)
+    }
+
+    override fun products(businessId: Long): Flow<List<Product>> =
+        productDao.getByBusiness(businessId)
+
+    override fun getProduct(id: Long): Flow<Product?> = productDao.getById(id)
+
+    override fun productMovements(productId: Long): Flow<List<StockMovement>> =
+        stockMovementDao.getByProduct(productId)
+
+    override fun inventoryItemCount(businessId: Long): Flow<Int> =
+        productDao.itemCount(businessId)
+
+    override fun inventoryTotalValue(businessId: Long): Flow<Double> =
+        productDao.totalValue(businessId)
+
+    override fun lowStockCount(businessId: Long): Flow<Int> =
+        productDao.lowStockCount(businessId)
+
+    override suspend fun addProduct(product: Product, imagePath: String?): Long {
+        val now = System.currentTimeMillis()
+        val prepared = product.copy(
+            createdAt = if (product.createdAt == 0L) now else product.createdAt,
+            updatedAt = if (product.updatedAt == 0L) now else product.updatedAt,
+            imageLocalPath = imagePath ?: product.imageLocalPath
+        )
+        return productDao.insert(prepared)
+    }
+
+    override suspend fun updateProduct(product: Product) =
+        productDao.update(product.copy(updatedAt = System.currentTimeMillis()))
+
+    override suspend fun deleteProduct(product: Product) {
+        productDao.delete(product)
+        product.imageLocalPath?.let { path ->
+            runCatching { File(path).delete() }
+        }
+    }
+
+    override suspend fun adjustStock(productId: Long, delta: Double, reason: String?) {
+        db.withTransaction {
+            val current = productDao.getById(productId).first() ?: return@withTransaction
+            val now = System.currentTimeMillis()
+            stockMovementDao.insert(
+                StockMovement(
+                    productId = productId,
+                    delta = delta,
+                    reason = reason,
+                    createdAt = now
+                )
+            )
+            productDao.update(
+                current.copy(
+                    quantity = current.quantity + delta,
+                    updatedAt = now
+                )
+            )
+        }
     }
 }

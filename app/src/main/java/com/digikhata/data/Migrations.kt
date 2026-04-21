@@ -3,6 +3,39 @@ package com.digikhata.data
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `products` (" +
+                    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    "`businessId` INTEGER NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`sku` TEXT, " +
+                    "`costPrice` REAL NOT NULL, " +
+                    "`sellPrice` REAL NOT NULL, " +
+                    "`quantity` REAL NOT NULL, " +
+                    "`lowStockThreshold` REAL NOT NULL, " +
+                    "`unit` TEXT NOT NULL, " +
+                    "`imageLocalPath` TEXT, " +
+                    "`createdAt` INTEGER NOT NULL, " +
+                    "`updatedAt` INTEGER NOT NULL, " +
+                    "FOREIGN KEY(`businessId`) REFERENCES `businesses`(`id`) ON DELETE CASCADE)"
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_products_businessId` ON `products` (`businessId`)")
+
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `stock_movements` (" +
+                    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    "`productId` INTEGER NOT NULL, " +
+                    "`delta` REAL NOT NULL, " +
+                    "`reason` TEXT, " +
+                    "`createdAt` INTEGER NOT NULL, " +
+                    "FOREIGN KEY(`productId`) REFERENCES `products`(`id`) ON DELETE CASCADE)"
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_stock_movements_productId` ON `stock_movements` (`productId`)")
+    }
+}
+
 val MIGRATION_3_4: Migration = object : Migration(3, 4) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(

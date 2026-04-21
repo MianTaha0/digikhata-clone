@@ -6,6 +6,7 @@ import com.digikhata.data.DigiDatabase
 import com.digikhata.data.MIGRATION_1_2
 import com.digikhata.data.MIGRATION_2_3
 import com.digikhata.data.MIGRATION_3_4
+import com.digikhata.data.MIGRATION_4_5
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
@@ -13,6 +14,8 @@ import com.digikhata.data.dao.ExpenseEntryDao
 import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
+import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StockMovementDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
 import dagger.Module
@@ -30,7 +33,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): DigiDatabase =
         Room.databaseBuilder(context, DigiDatabase::class.java, "digikhata.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -43,4 +46,6 @@ object DatabaseModule {
     @Provides fun provideExpenseEntryDao(db: DigiDatabase): ExpenseEntryDao = db.expenseEntryDao()
     @Provides fun provideInvoiceDao(db: DigiDatabase): InvoiceDao = db.invoiceDao()
     @Provides fun provideInvoiceItemDao(db: DigiDatabase): InvoiceItemDao = db.invoiceItemDao()
+    @Provides fun provideProductDao(db: DigiDatabase): ProductDao = db.productDao()
+    @Provides fun provideStockMovementDao(db: DigiDatabase): StockMovementDao = db.stockMovementDao()
 }
