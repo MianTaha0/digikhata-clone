@@ -10,6 +10,8 @@ import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StaffDao
+import com.digikhata.data.dao.StaffPaymentDao
 import com.digikhata.data.dao.StockMovementDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -21,6 +23,8 @@ import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.Product
+import com.digikhata.data.entity.Staff
+import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
@@ -37,9 +41,11 @@ import com.digikhata.data.entity.TxEntity
         Invoice::class,
         InvoiceItem::class,
         Product::class,
-        StockMovement::class
+        StockMovement::class,
+        Staff::class,
+        StaffPayment::class
     ],
-    version = 5,
+    version = 6,
     exportSchema = false
 )
 abstract class DigiDatabase : RoomDatabase() {
@@ -54,4 +60,6 @@ abstract class DigiDatabase : RoomDatabase() {
     abstract fun invoiceItemDao(): InvoiceItemDao
     abstract fun productDao(): ProductDao
     abstract fun stockMovementDao(): StockMovementDao
+    abstract fun staffDao(): StaffDao
+    abstract fun staffPaymentDao(): StaffPaymentDao
 }

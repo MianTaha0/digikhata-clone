@@ -8,6 +8,8 @@ import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.Product
+import com.digikhata.data.entity.Staff
+import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TxEntity
 import com.digikhata.domain.model.CashTotals
@@ -68,4 +70,19 @@ interface DigiRepository {
     suspend fun updateProduct(product: Product)
     suspend fun deleteProduct(product: Product)
     suspend fun adjustStock(productId: Long, delta: Double, reason: String?)
+
+    fun staffList(businessId: Long): Flow<List<Staff>>
+    fun getStaff(id: Long): Flow<Staff?>
+    fun staffCount(businessId: Long): Flow<Int>
+    fun totalMonthlyPayroll(businessId: Long): Flow<Double>
+    fun paidThisMonthForBusiness(businessId: Long, from: Long, to: Long): Flow<Double>
+    fun paidByStaffInRange(businessId: Long, from: Long, to: Long): Flow<Map<Long, Double>>
+    suspend fun addStaff(staff: Staff, imagePath: String?): Long
+    suspend fun updateStaff(staff: Staff)
+    suspend fun deleteStaff(staff: Staff)
+
+    fun staffPayments(staffId: Long): Flow<List<StaffPayment>>
+    fun paidInRange(staffId: Long, from: Long, to: Long): Flow<Double>
+    suspend fun addStaffPayment(payment: StaffPayment): Long
+    suspend fun deleteStaffPayment(payment: StaffPayment)
 }

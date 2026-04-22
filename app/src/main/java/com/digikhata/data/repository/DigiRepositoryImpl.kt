@@ -10,6 +10,8 @@ import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StaffDao
+import com.digikhata.data.dao.StaffPaymentDao
 import com.digikhata.data.dao.StockMovementDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
@@ -21,6 +23,8 @@ import com.digikhata.data.entity.ExpenseEntry
 import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.Product
+import com.digikhata.data.entity.Staff
+import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
@@ -47,6 +51,8 @@ class DigiRepositoryImpl @Inject constructor(
     private val invoiceItemDao: InvoiceItemDao,
     private val productDao: ProductDao,
     private val stockMovementDao: StockMovementDao,
+    private val staffDao: StaffDao,
+    private val staffPaymentDao: StaffPaymentDao,
     private val db: DigiDatabase
 ) : DigiRepository {
 
@@ -253,6 +259,60 @@ class DigiRepositoryImpl @Inject constructor(
         product.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
+    }
+
+    override fun staffList(businessId: Long): Flow<List<Staff>> =
+        staffDao.getByBusiness(businessId)
+
+    override fun getStaff(id: Long): Flow<Staff?> = staffDao.getById(id)
+
+    override fun staffCount(businessId: Long): Flow<Int> = staffDao.staffCount(businessId)
+
+    override fun totalMonthlyPayroll(businessId: Long): Flow<Double> =
+        staffDao.totalMonthlyPayroll(businessId)
+
+    override fun paidThisMonthForBusiness(businessId: Long, from: Long, to: Long): Flow<Double> =
+        staffPaymentDao.paidThisMonthForBusiness(businessId, from, to)
+
+    override fun paidByStaffInRange(businessId: Long, from: Long, to: Long): Flow<Map<Long, Double>> =
+        staffPaymentDao.paidByStaffInRange(businessId, from, to).map { list ->
+            list.associate { it.staffId to it.amount }
+        }
+
+    override suspend fun addStaff(staff: Staff, imagePath: String?): Long {
+        val now = System.currentTimeMillis()
+        val prepared = staff.copy(
+            createdAt = if (staff.createdAt == 0L) now else staff.createdAt,
+            updatedAt = if (staff.updatedAt == 0L) now else staff.updatedAt,
+            imageLocalPath = imagePath ?: staff.imageLocalPath
+        )
+        return staffDao.insert(prepared)
+    }
+
+    override suspend fun updateStaff(staff: Staff) =
+        staffDao.update(staff.copy(updatedAt = System.currentTimeMillis()))
+
+    override suspend fun deleteStaff(staff: Staff) {
+        staffDao.delete(staff)
+        staff.imageLocalPath?.let { path ->
+            runCatching { File(path).delete() }
+        }
+    }
+
+    override fun staffPayments(staffId: Long): Flow<List<StaffPayment>> =
+        staffPaymentDao.getByStaff(staffId)
+
+    override fun paidInRange(staffId: Long, from: Long, to: Long): Flow<Double> =
+        staffPaymentDao.paidBetween(staffId, from, to)
+
+    override suspend fun addStaffPayment(payment: StaffPayment): Long {
+        val now = System.currentTimeMillis()
+        val prepared = if (payment.createdAt == 0L) payment.copy(createdAt = now) else payment
+        return staffPaymentDao.insert(prepared)
+    }
+
+    override suspend fun deleteStaffPayment(payment: StaffPayment) {
+        staffPaymentDao.delete(payment)
     }
 
     override suspend fun adjustStock(productId: Long, delta: Double, reason: String?) {

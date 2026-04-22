@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Divider
@@ -41,6 +42,7 @@ fun DrawerContent(
     onClose: () -> Unit,
     onNavigateCreateBook: () -> Unit,
     onOpenBookSettings: (Long) -> Unit,
+    onOpenStaff: () -> Unit = {},
     vm: DrawerViewModel = hiltViewModel()
 ) {
     val businesses by vm.businesses.collectAsState()
@@ -108,6 +110,7 @@ fun DrawerContent(
             Text("Create New Book", color = DigiRed, fontWeight = FontWeight.SemiBold)
         }
         Divider()
+        DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
         DrawerRow(Icons.Default.Share, "Share App") { onClose() }
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
         DrawerRow(Icons.Default.Settings, "Settings") { onClose() }

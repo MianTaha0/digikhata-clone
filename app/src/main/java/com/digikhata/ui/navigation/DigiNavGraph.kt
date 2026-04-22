@@ -47,6 +47,8 @@ import com.digikhata.ui.expense.ExpenseDetailScreen
 import com.digikhata.ui.expense.ExpenseScreen
 import com.digikhata.ui.inventory.InventoryScreen
 import com.digikhata.ui.inventory.ProductDetailScreen
+import com.digikhata.ui.staff.StaffDetailScreen
+import com.digikhata.ui.staff.StaffListScreen
 import com.digikhata.ui.invoice.CreateEditInvoiceScreen
 import com.digikhata.ui.invoice.InvoiceDetailScreen
 import com.digikhata.ui.invoice.InvoiceListScreen
@@ -117,6 +119,10 @@ fun DigiApp() {
                 onOpenBookSettings = { bookId ->
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.bookSettings(bookId))
+                },
+                onOpenStaff = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.STAFF_LIST)
                 }
             )
         }
@@ -275,6 +281,15 @@ fun DigiApp() {
                     arguments = listOf(navArgument("productId") { type = NavType.LongType })
                 ) {
                     ProductDetailScreen(navController = navController)
+                }
+                composable(Routes.STAFF_LIST) {
+                    StaffListScreen(navController = navController)
+                }
+                composable(
+                    Routes.STAFF_DETAIL_PATTERN,
+                    arguments = listOf(navArgument("staffId") { type = NavType.LongType })
+                ) {
+                    StaffDetailScreen(navController = navController)
                 }
             }
         }

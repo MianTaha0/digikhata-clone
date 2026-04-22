@@ -3,6 +3,39 @@ package com.digikhata.data
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+val MIGRATION_5_6: Migration = object : Migration(5, 6) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `staff` (" +
+                    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    "`businessId` INTEGER NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`role` TEXT, " +
+                    "`phone` TEXT, " +
+                    "`monthlySalary` REAL NOT NULL, " +
+                    "`joiningDate` INTEGER NOT NULL, " +
+                    "`imageLocalPath` TEXT, " +
+                    "`notes` TEXT, " +
+                    "`createdAt` INTEGER NOT NULL, " +
+                    "`updatedAt` INTEGER NOT NULL, " +
+                    "FOREIGN KEY(`businessId`) REFERENCES `businesses`(`id`) ON DELETE CASCADE)"
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_staff_businessId` ON `staff` (`businessId`)")
+
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `staff_payments` (" +
+                    "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, " +
+                    "`staffId` INTEGER NOT NULL, " +
+                    "`amount` REAL NOT NULL, " +
+                    "`paymentDate` INTEGER NOT NULL, " +
+                    "`note` TEXT, " +
+                    "`createdAt` INTEGER NOT NULL, " +
+                    "FOREIGN KEY(`staffId`) REFERENCES `staff`(`id`) ON DELETE CASCADE)"
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_staff_payments_staffId` ON `staff_payments` (`staffId`)")
+    }
+}
+
 val MIGRATION_4_5: Migration = object : Migration(4, 5) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(

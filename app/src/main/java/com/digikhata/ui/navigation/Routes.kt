@@ -19,7 +19,10 @@ object Routes {
     const val INVOICE_DETAIL_PATTERN = "invoiceDetail/{invoiceId}"
     const val INVENTORY = "inventory"
     const val PRODUCT_DETAIL_PATTERN = "productDetail/{productId}"
+    const val STAFF_LIST = "staffList"
+    const val STAFF_DETAIL_PATTERN = "staffDetail/{staffId}"
 
+    fun staffDetail(id: Long) = "staffDetail/$id"
     fun productDetail(id: Long) = "productDetail/$id"
     fun bookSettings(bookId: Long) = "bookSettings/$bookId"
     fun clientDetail(clientId: Long) = "clientDetail/$clientId"
