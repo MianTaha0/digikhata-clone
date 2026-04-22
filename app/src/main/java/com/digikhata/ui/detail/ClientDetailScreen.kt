@@ -16,9 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,7 +76,7 @@ fun ClientDetailScreen(
             TopAppBar(
                 title = { Text(client?.name ?: "Customer") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, contentDescription = "Back") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") }
                 },
                 actions = {
                     IconButton(onClick = {
@@ -85,7 +85,7 @@ fun ClientDetailScreen(
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://wa.me/$phone"))
                             context.startActivity(intent)
                         }
-                    }) { Icon(Icons.Default.Chat, contentDescription = "WhatsApp") }
+                    }) { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "WhatsApp") }
                     IconButton(onClick = { showReminder = true }) {
                         Icon(Icons.Default.Notifications, contentDescription = "Reminder")
                     }

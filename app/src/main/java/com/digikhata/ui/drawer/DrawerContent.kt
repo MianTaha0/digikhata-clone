@@ -20,7 +20,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -109,7 +109,7 @@ fun DrawerContent(
             Spacer(Modifier.width(12.dp))
             Text("Create New Book", color = DigiRed, fontWeight = FontWeight.SemiBold)
         }
-        Divider()
+        HorizontalDivider()
         DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
         DrawerRow(Icons.Default.Share, "Share App") { onClose() }
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
