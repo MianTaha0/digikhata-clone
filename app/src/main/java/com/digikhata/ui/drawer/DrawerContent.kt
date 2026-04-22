@@ -43,6 +43,7 @@ fun DrawerContent(
     onNavigateCreateBook: () -> Unit,
     onOpenBookSettings: (Long) -> Unit,
     onOpenStaff: () -> Unit = {},
+    onOpenSettings: () -> Unit = {},
     vm: DrawerViewModel = hiltViewModel()
 ) {
     val businesses by vm.businesses.collectAsState()
@@ -113,7 +114,7 @@ fun DrawerContent(
         DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
         DrawerRow(Icons.Default.Share, "Share App") { onClose() }
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
-        DrawerRow(Icons.Default.Settings, "Settings") { onClose() }
+        DrawerRow(Icons.Default.Settings, "Settings") { onOpenSettings() }
         Spacer(Modifier.height(8.dp))
     }
 }

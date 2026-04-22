@@ -21,6 +21,7 @@ object Routes {
     const val PRODUCT_DETAIL_PATTERN = "productDetail/{productId}"
     const val STAFF_LIST = "staffList"
     const val STAFF_DETAIL_PATTERN = "staffDetail/{staffId}"
+    const val SETTINGS = "settings"
 
     fun staffDetail(id: Long) = "staffDetail/$id"
     fun productDetail(id: Long) = "productDetail/$id"

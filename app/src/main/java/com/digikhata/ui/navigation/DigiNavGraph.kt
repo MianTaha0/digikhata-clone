@@ -59,6 +59,7 @@ import com.digikhata.ui.notifications.NotificationsScreen
 import com.digikhata.ui.notifications.NotificationsViewModel
 import com.digikhata.ui.placeholder.ComingSoonScreen
 import com.digikhata.ui.search.SearchScreen
+import com.digikhata.ui.settings.SettingsScreen
 import com.digikhata.ui.supplier.SupplierListScreen
 import com.digikhata.ui.theme.DigiRed
 import com.digikhata.ui.components.digiTopBarColors
@@ -123,6 +124,10 @@ fun DigiApp() {
                 onOpenStaff = {
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.STAFF_LIST)
+                },
+                onOpenSettings = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.SETTINGS)
                 }
             )
         }
@@ -284,6 +289,9 @@ fun DigiApp() {
                 }
                 composable(Routes.STAFF_LIST) {
                     StaffListScreen(navController = navController)
+                }
+                composable(Routes.SETTINGS) {
+                    SettingsScreen(onBack = { navController.popBackStack() })
                 }
                 composable(
                     Routes.STAFF_DETAIL_PATTERN,
