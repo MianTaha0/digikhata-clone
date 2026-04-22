@@ -192,6 +192,8 @@ fun StaffDetailScreen(
                     currency = currency
                 )
 
+                AttendanceCalendarCard(currency = currency)
+
                 HorizontalDivider()
 
                 Text(

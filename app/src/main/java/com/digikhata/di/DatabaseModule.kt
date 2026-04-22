@@ -8,6 +8,7 @@ import com.digikhata.data.MIGRATION_2_3
 import com.digikhata.data.MIGRATION_3_4
 import com.digikhata.data.MIGRATION_4_5
 import com.digikhata.data.MIGRATION_5_6
+import com.digikhata.data.MIGRATION_6_7
 import com.digikhata.data.dao.BusinessDao
 import com.digikhata.data.dao.CashEntryDao
 import com.digikhata.data.dao.ClientDao
@@ -16,6 +17,7 @@ import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StaffAttendanceDao
 import com.digikhata.data.dao.StaffDao
 import com.digikhata.data.dao.StaffPaymentDao
 import com.digikhata.data.dao.StockMovementDao
@@ -36,7 +38,7 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): DigiDatabase =
         Room.databaseBuilder(context, DigiDatabase::class.java, "digikhata.db")
-            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6)
+            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5, MIGRATION_5_6, MIGRATION_6_7)
             .fallbackToDestructiveMigration()
             .build()
 
@@ -53,4 +55,5 @@ object DatabaseModule {
     @Provides fun provideStockMovementDao(db: DigiDatabase): StockMovementDao = db.stockMovementDao()
     @Provides fun provideStaffDao(db: DigiDatabase): StaffDao = db.staffDao()
     @Provides fun provideStaffPaymentDao(db: DigiDatabase): StaffPaymentDao = db.staffPaymentDao()
+    @Provides fun provideStaffAttendanceDao(db: DigiDatabase): StaffAttendanceDao = db.staffAttendanceDao()
 }

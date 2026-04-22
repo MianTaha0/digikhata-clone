@@ -9,6 +9,7 @@ import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.Product
 import com.digikhata.data.entity.Staff
+import com.digikhata.data.entity.StaffAttendance
 import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TxEntity
@@ -85,4 +86,8 @@ interface DigiRepository {
     fun paidInRange(staffId: Long, from: Long, to: Long): Flow<Double>
     suspend fun addStaffPayment(payment: StaffPayment): Long
     suspend fun deleteStaffPayment(payment: StaffPayment)
+
+    fun observeAttendance(staffId: Long, from: Long, to: Long): Flow<List<StaffAttendance>>
+    suspend fun upsertAttendance(record: StaffAttendance): Long
+    suspend fun clearAttendance(staffId: Long, date: Long)
 }

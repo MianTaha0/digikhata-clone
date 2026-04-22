@@ -10,6 +10,7 @@ import com.digikhata.data.dao.InvoiceDao
 import com.digikhata.data.dao.InvoiceItemDao
 import com.digikhata.data.dao.NotificationDao
 import com.digikhata.data.dao.ProductDao
+import com.digikhata.data.dao.StaffAttendanceDao
 import com.digikhata.data.dao.StaffDao
 import com.digikhata.data.dao.StaffPaymentDao
 import com.digikhata.data.dao.StockMovementDao
@@ -24,6 +25,7 @@ import com.digikhata.data.entity.Invoice
 import com.digikhata.data.entity.InvoiceItem
 import com.digikhata.data.entity.Product
 import com.digikhata.data.entity.Staff
+import com.digikhata.data.entity.StaffAttendance
 import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
 import com.digikhata.data.entity.TransactionImage
@@ -53,6 +55,7 @@ class DigiRepositoryImpl @Inject constructor(
     private val stockMovementDao: StockMovementDao,
     private val staffDao: StaffDao,
     private val staffPaymentDao: StaffPaymentDao,
+    private val staffAttendanceDao: StaffAttendanceDao,
     private val db: DigiDatabase
 ) : DigiRepository {
 
@@ -313,6 +316,22 @@ class DigiRepositoryImpl @Inject constructor(
 
     override suspend fun deleteStaffPayment(payment: StaffPayment) {
         staffPaymentDao.delete(payment)
+    }
+
+    override fun observeAttendance(staffId: Long, from: Long, to: Long): Flow<List<StaffAttendance>> =
+        staffAttendanceDao.observeRange(staffId, from, to)
+
+    override suspend fun upsertAttendance(record: StaffAttendance): Long {
+        val now = System.currentTimeMillis()
+        val prepared = record.copy(
+            createdAt = if (record.createdAt == 0L) now else record.createdAt,
+            updatedAt = now
+        )
+        return staffAttendanceDao.upsert(prepared)
+    }
+
+    override suspend fun clearAttendance(staffId: Long, date: Long) {
+        staffAttendanceDao.clear(staffId, date)
     }
 
     override suspend fun adjustStock(productId: Long, delta: Double, reason: String?) {
