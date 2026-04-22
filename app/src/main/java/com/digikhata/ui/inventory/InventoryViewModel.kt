@@ -41,13 +41,7 @@ class InventoryViewModel @Inject constructor(
 
     val products: StateFlow<List<Product>> =
         combine(allProducts, filter) { list, f ->
-            when (f) {
-                InventoryFilter.ALL -> list
-                InventoryFilter.LOW -> list.filter {
-                    it.lowStockThreshold > 0 && it.quantity <= it.lowStockThreshold && it.quantity > 0
-                }
-                InventoryFilter.OUT -> list.filter { it.quantity <= 0 }
-            }
+            list.filter(f::matches)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
 
     val itemCount: StateFlow<Int> = active.id
