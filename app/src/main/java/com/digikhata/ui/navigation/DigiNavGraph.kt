@@ -60,6 +60,8 @@ import com.digikhata.ui.notifications.NotificationsViewModel
 import com.digikhata.ui.placeholder.ComingSoonScreen
 import com.digikhata.ui.search.SearchScreen
 import com.digikhata.ui.settings.SettingsScreen
+import com.digikhata.ui.auth.SignInScreen
+import com.digikhata.ui.auth.ProfileScreen
 import com.digikhata.ui.supplier.SupplierListScreen
 import com.digikhata.ui.theme.DigiRed
 import com.digikhata.ui.components.digiTopBarColors
@@ -128,6 +130,14 @@ fun DigiApp() {
                 onOpenSettings = {
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.SETTINGS)
+                },
+                onOpenSignIn = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.SIGN_IN)
+                },
+                onOpenProfile = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.PROFILE)
                 }
             )
         }
@@ -291,7 +301,20 @@ fun DigiApp() {
                     StaffListScreen(navController = navController)
                 }
                 composable(Routes.SETTINGS) {
-                    SettingsScreen(onBack = { navController.popBackStack() })
+                    SettingsScreen(
+                        onBack = { navController.popBackStack() },
+                        onSignIn = { navController.navigate(Routes.SIGN_IN) },
+                        onProfile = { navController.navigate(Routes.PROFILE) }
+                    )
+                }
+                composable(Routes.SIGN_IN) {
+                    SignInScreen(
+                        onBack = { navController.popBackStack() },
+                        onSignedIn = { navController.popBackStack() }
+                    )
+                }
+                composable(Routes.PROFILE) {
+                    ProfileScreen(onBack = { navController.popBackStack() })
                 }
                 composable(
                     Routes.STAFF_DETAIL_PATTERN,

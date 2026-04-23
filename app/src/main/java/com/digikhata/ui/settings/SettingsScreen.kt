@@ -37,6 +37,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.digikhata.data.auth.AuthRepository
+import com.digikhata.data.auth.DigiUser
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,10 +60,23 @@ import com.digikhata.ui.theme.DigiRed
 
 private const val GITHUB_URL = "https://github.com/MianTaha0/digikhata-clone"
 
+@HiltViewModel
+class SettingsViewModel @Inject constructor(
+    authRepo: AuthRepository
+) : ViewModel() {
+    val currentUser: StateFlow<DigiUser?> = authRepo.currentUser
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onSignIn: () -> Unit = {},
+    onProfile: () -> Unit = {},
+    vm: SettingsViewModel = hiltViewModel()
+) {
     val context = LocalContext.current
+    val currentUser by vm.currentUser.collectAsState()
 
     Scaffold(
         topBar = {
@@ -80,8 +102,13 @@ fun SettingsScreen(onBack: () -> Unit) {
             SettingsRow(
                 icon = Icons.Default.Cloud,
                 title = "Cloud Sync",
-                subtitle = "Sign in to sync across devices",
-                comingSoon = true
+                subtitle = if (currentUser != null)
+                    "Signed in as ${currentUser?.phoneNumber ?: ""}"
+                else
+                    "Sign in to sync across devices",
+                onClick = {
+                    if (currentUser != null) onProfile() else onSignIn()
+                }
             )
             SettingsRow(
                 icon = Icons.Default.Download,

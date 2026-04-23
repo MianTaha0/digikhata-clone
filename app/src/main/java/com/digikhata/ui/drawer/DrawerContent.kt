@@ -15,7 +15,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Group
 import androidx.compose.material.icons.filled.Share
@@ -44,10 +46,13 @@ fun DrawerContent(
     onOpenBookSettings: (Long) -> Unit,
     onOpenStaff: () -> Unit = {},
     onOpenSettings: () -> Unit = {},
+    onOpenSignIn: () -> Unit = {},
+    onOpenProfile: () -> Unit = {},
     vm: DrawerViewModel = hiltViewModel()
 ) {
     val businesses by vm.businesses.collectAsState()
     val activeId by vm.activeId.collectAsState()
+    val currentUser by vm.currentUser.collectAsState()
 
     ModalDrawerSheet(drawerContainerColor = Color.White) {
         Box(
@@ -111,6 +116,14 @@ fun DrawerContent(
             Text("Create New Book", color = DigiRed, fontWeight = FontWeight.SemiBold)
         }
         HorizontalDivider()
+        if (currentUser != null) {
+            DrawerRow(
+                icon = Icons.Default.AccountCircle,
+                label = currentUser?.phoneNumber ?: "Account"
+            ) { onOpenProfile() }
+        } else {
+            DrawerRow(Icons.Default.CloudSync, "Sign in to sync") { onOpenSignIn() }
+        }
         DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
         DrawerRow(Icons.Default.Share, "Share App") { onClose() }
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
