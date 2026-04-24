@@ -28,5 +28,7 @@ data class Staff(
     val imageLocalPath: String? = null,
     val notes: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

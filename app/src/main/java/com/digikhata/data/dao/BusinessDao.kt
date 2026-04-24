@@ -20,12 +20,12 @@ interface BusinessDao {
     @Delete
     suspend fun delete(business: Business)
 
-    @Query("SELECT * FROM businesses WHERE id = :id")
+    @Query("SELECT * FROM businesses WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<Business?>
 
-    @Query("SELECT * FROM businesses ORDER BY createdAt ASC")
+    @Query("SELECT * FROM businesses WHERE deletedAt IS NULL ORDER BY createdAt ASC")
     fun getAll(): Flow<List<Business>>
 
-    @Query("SELECT COUNT(*) FROM businesses")
+    @Query("SELECT COUNT(*) FROM businesses WHERE deletedAt IS NULL")
     fun count(): Flow<Int>
 }

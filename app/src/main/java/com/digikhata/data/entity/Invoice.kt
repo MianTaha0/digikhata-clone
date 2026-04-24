@@ -35,5 +35,7 @@ data class Invoice(
     val discountIsPercent: Boolean = false,
     val amountPaid: Double = 0.0,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

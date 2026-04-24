@@ -20,10 +20,10 @@ interface InvoiceDao {
     @Delete
     suspend fun deleteInvoice(inv: Invoice)
 
-    @Query("SELECT * FROM invoices WHERE id = :id")
+    @Query("SELECT * FROM invoices WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<Invoice?>
 
-    @Query("SELECT * FROM invoices WHERE businessId = :bid ORDER BY issueDate DESC, id DESC")
+    @Query("SELECT * FROM invoices WHERE businessId = :bid AND deletedAt IS NULL ORDER BY issueDate DESC, id DESC")
     fun getByBusiness(bid: Long): Flow<List<Invoice>>
 
     @Query("SELECT COALESCE(MAX(sequenceNumber), 0) + 1 FROM invoices WHERE businessId = :bid")
@@ -33,7 +33,7 @@ interface InvoiceDao {
         """
         SELECT DISTINCT ii.name FROM invoice_items ii
         JOIN invoices i ON i.id = ii.invoiceId
-        WHERE i.businessId = :bid
+        WHERE i.businessId = :bid AND i.deletedAt IS NULL AND ii.deletedAt IS NULL
         ORDER BY ii.id DESC
         LIMIT 20
         """

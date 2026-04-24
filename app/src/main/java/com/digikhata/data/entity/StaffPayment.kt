@@ -23,5 +23,8 @@ data class StaffPayment(
     val amount: Double,
     val paymentDate: Long,
     val note: String? = null,
-    val createdAt: Long = System.currentTimeMillis()
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

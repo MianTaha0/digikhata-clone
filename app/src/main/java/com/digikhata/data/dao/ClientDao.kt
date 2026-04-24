@@ -20,12 +20,12 @@ interface ClientDao {
     @Delete
     suspend fun delete(client: Client)
 
-    @Query("SELECT * FROM clients WHERE id = :id")
+    @Query("SELECT * FROM clients WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<Client?>
 
-    @Query("SELECT * FROM clients WHERE businessId = :businessId AND type = :type AND isArchived = 0 ORDER BY isPinned DESC, name ASC")
+    @Query("SELECT * FROM clients WHERE businessId = :businessId AND type = :type AND isArchived = 0 AND deletedAt IS NULL ORDER BY isPinned DESC, name ASC")
     fun getByBusinessAndType(businessId: Long, type: Int): Flow<List<Client>>
 
-    @Query("SELECT * FROM clients WHERE businessId = :businessId AND type = :type AND isArchived = 0 AND (name LIKE '%' || :query || '%' OR phone LIKE '%' || :query || '%') ORDER BY name ASC")
+    @Query("SELECT * FROM clients WHERE businessId = :businessId AND type = :type AND isArchived = 0 AND deletedAt IS NULL AND (name LIKE '%' || :query || '%' OR phone LIKE '%' || :query || '%') ORDER BY name ASC")
     fun search(businessId: Long, type: Int, query: String): Flow<List<Client>>
 }

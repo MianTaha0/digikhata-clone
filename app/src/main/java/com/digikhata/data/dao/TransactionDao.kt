@@ -20,24 +20,24 @@ interface TransactionDao {
     @Delete
     suspend fun delete(tx: TxEntity)
 
-    @Query("SELECT * FROM transactions WHERE id = :id")
+    @Query("SELECT * FROM transactions WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<TxEntity?>
 
-    @Query("SELECT * FROM transactions WHERE clientId = :clientId ORDER BY entryDate DESC, id DESC")
+    @Query("SELECT * FROM transactions WHERE clientId = :clientId AND deletedAt IS NULL ORDER BY entryDate DESC, id DESC")
     fun getByClient(clientId: Long): Flow<List<TxEntity>>
 
     @Query("""
         SELECT COALESCE(
-            (SELECT SUM(amount) FROM transactions WHERE clientId = :clientId AND type = 0), 0.0
+            (SELECT SUM(amount) FROM transactions WHERE clientId = :clientId AND type = 0 AND deletedAt IS NULL), 0.0
         ) - COALESCE(
-            (SELECT SUM(amount) FROM transactions WHERE clientId = :clientId AND type = 1), 0.0
+            (SELECT SUM(amount) FROM transactions WHERE clientId = :clientId AND type = 1 AND deletedAt IS NULL), 0.0
         )
     """)
     fun balanceForClient(clientId: Long): Flow<Double?>
 
-    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE businessId = :businessId AND type = 0")
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE businessId = :businessId AND type = 0 AND deletedAt IS NULL")
     fun totalGaveForBusiness(businessId: Long): Flow<Double?>
 
-    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE businessId = :businessId AND type = 1")
+    @Query("SELECT COALESCE(SUM(amount), 0.0) FROM transactions WHERE businessId = :businessId AND type = 1 AND deletedAt IS NULL")
     fun totalGotForBusiness(businessId: Long): Flow<Double?>
 }

@@ -19,5 +19,7 @@ data class Business(
     val logoLocalPath: String? = null,
     val invoicePrefix: String = "INV-",
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

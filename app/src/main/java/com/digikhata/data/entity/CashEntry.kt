@@ -27,5 +27,7 @@ data class CashEntry(
     val entryDate: Long,
     val imageLocalPath: String? = null,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

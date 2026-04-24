@@ -20,15 +20,15 @@ interface StaffDao {
     @Delete
     suspend fun delete(s: Staff)
 
-    @Query("SELECT * FROM staff WHERE id = :id")
+    @Query("SELECT * FROM staff WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<Staff?>
 
-    @Query("SELECT * FROM staff WHERE businessId = :bid ORDER BY name COLLATE NOCASE ASC")
+    @Query("SELECT * FROM staff WHERE businessId = :bid AND deletedAt IS NULL ORDER BY name COLLATE NOCASE ASC")
     fun getByBusiness(bid: Long): Flow<List<Staff>>
 
-    @Query("SELECT COUNT(*) FROM staff WHERE businessId = :bid")
+    @Query("SELECT COUNT(*) FROM staff WHERE businessId = :bid AND deletedAt IS NULL")
     fun staffCount(bid: Long): Flow<Int>
 
-    @Query("SELECT COALESCE(SUM(monthlySalary),0) FROM staff WHERE businessId = :bid")
+    @Query("SELECT COALESCE(SUM(monthlySalary),0) FROM staff WHERE businessId = :bid AND deletedAt IS NULL")
     fun totalMonthlyPayroll(bid: Long): Flow<Double>
 }

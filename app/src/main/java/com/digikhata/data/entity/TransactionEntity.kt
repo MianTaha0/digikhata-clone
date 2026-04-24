@@ -35,5 +35,7 @@ data class TxEntity(
     val imagesCount: Int = 0,
     val smsStatus: Int = -1,
     val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis()
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

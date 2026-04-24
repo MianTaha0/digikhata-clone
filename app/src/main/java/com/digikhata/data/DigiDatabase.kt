@@ -51,7 +51,7 @@ import com.digikhata.data.entity.TxEntity
         StaffAttendance::class,
         SyncOp::class
     ],
-    version = 8,
+    version = 9,
     exportSchema = false
 )
 abstract class DigiDatabase : RoomDatabase() {

@@ -20,12 +20,12 @@ interface ExpenseEntryDao {
     @Delete
     suspend fun delete(entry: ExpenseEntry)
 
-    @Query("SELECT * FROM expense_entries WHERE id = :id")
+    @Query("SELECT * FROM expense_entries WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<ExpenseEntry?>
 
-    @Query("SELECT * FROM expense_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to ORDER BY entryDate DESC, id DESC")
+    @Query("SELECT * FROM expense_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to AND deletedAt IS NULL ORDER BY entryDate DESC, id DESC")
     fun getInRange(bid: Long, from: Long, to: Long): Flow<List<ExpenseEntry>>
 
-    @Query("SELECT COALESCE(SUM(amount),0) FROM expense_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to")
+    @Query("SELECT COALESCE(SUM(amount),0) FROM expense_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to AND deletedAt IS NULL")
     fun totalForPeriod(bid: Long, from: Long, to: Long): Flow<Double>
 }

@@ -12,6 +12,6 @@ interface StockMovementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(m: StockMovement): Long
 
-    @Query("SELECT * FROM stock_movements WHERE productId = :pid ORDER BY createdAt DESC, id DESC")
+    @Query("SELECT * FROM stock_movements WHERE productId = :pid AND deletedAt IS NULL ORDER BY createdAt DESC, id DESC")
     fun getByProduct(pid: Long): Flow<List<StockMovement>>
 }

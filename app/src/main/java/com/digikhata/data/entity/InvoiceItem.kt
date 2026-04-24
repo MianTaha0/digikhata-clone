@@ -24,5 +24,8 @@ data class InvoiceItem(
     val quantity: Double,
     val unitPrice: Double,
     val taxPercent: Double = 0.0,
-    val sortOrder: Int = 0
+    val sortOrder: Int = 0,
+    val updatedAt: Long = System.currentTimeMillis(),
+    val deletedAt: Long? = null,
+    val serverUpdatedAt: Long? = null
 )

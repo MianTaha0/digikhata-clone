@@ -76,10 +76,12 @@ class DigiRepositoryImpl @Inject constructor(
         return id
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete + tombstones.
+    // Phase 3b.3: soft-delete + upsert so peers mirror the deletedAt flag.
     override suspend fun deleteBusiness(business: Business) {
-        businessDao.delete(business)
-        cloudSync.onDelete(null, "businesses", business.id.toString())
+        val now = System.currentTimeMillis()
+        val tombstone = business.copy(deletedAt = now, updatedAt = now)
+        businessDao.update(tombstone)
+        cloudSync.onUpsert(null, "businesses", business.id.toString(), tombstone)
     }
     override fun getBusiness(id: Long): Flow<Business?> = businessDao.getById(id)
 
@@ -101,10 +103,11 @@ class DigiRepositoryImpl @Inject constructor(
         return id
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteClient(client: Client) {
-        clientDao.delete(client)
-        cloudSync.onDelete(client.businessId, "clients", client.id.toString())
+        val now = System.currentTimeMillis()
+        val tombstone = client.copy(deletedAt = now, updatedAt = now)
+        clientDao.update(tombstone)
+        cloudSync.onUpsert(client.businessId, "clients", client.id.toString(), tombstone)
     }
     override fun getClient(id: Long): Flow<Client?> = clientDao.getById(id)
 
@@ -141,10 +144,11 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "transactions", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteTransaction(tx: TxEntity) {
-        transactionDao.delete(tx)
-        cloudSync.onDelete(tx.businessId, "transactions", tx.id.toString())
+        val now = System.currentTimeMillis()
+        val tombstone = tx.copy(deletedAt = now, updatedAt = now)
+        transactionDao.update(tombstone)
+        cloudSync.onUpsert(tx.businessId, "transactions", tx.id.toString(), tombstone)
     }
 
     override val notifications: Flow<List<DigiNotification>> = notificationDao.getAll()
@@ -180,13 +184,14 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "cashEntries", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteCashEntry(entry: CashEntry) {
-        cashEntryDao.delete(entry)
+        val now = System.currentTimeMillis()
+        val tombstone = entry.copy(deletedAt = now, updatedAt = now)
+        cashEntryDao.update(tombstone)
         entry.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
-        cloudSync.onDelete(entry.businessId, "cashEntries", entry.id.toString())
+        cloudSync.onUpsert(entry.businessId, "cashEntries", entry.id.toString(), tombstone)
     }
 
     override fun expenses(businessId: Long, from: Long, to: Long): Flow<List<ExpenseEntry>> =
@@ -216,13 +221,14 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "expenseEntries", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteExpense(entry: ExpenseEntry) {
-        expenseEntryDao.delete(entry)
+        val now = System.currentTimeMillis()
+        val tombstone = entry.copy(deletedAt = now, updatedAt = now)
+        expenseEntryDao.update(tombstone)
         entry.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
-        cloudSync.onDelete(entry.businessId, "expenseEntries", entry.id.toString())
+        cloudSync.onUpsert(entry.businessId, "expenseEntries", entry.id.toString(), tombstone)
     }
 
     override fun invoices(businessId: Long): Flow<List<Invoice>> =
@@ -279,10 +285,11 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "invoices", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteInvoice(inv: Invoice) {
-        invoiceDao.deleteInvoice(inv)
-        cloudSync.onDelete(inv.businessId, "invoices", inv.id.toString())
+        val now = System.currentTimeMillis()
+        val tombstone = inv.copy(deletedAt = now, updatedAt = now)
+        invoiceDao.updateInvoice(tombstone)
+        cloudSync.onUpsert(inv.businessId, "invoices", inv.id.toString(), tombstone)
     }
 
     override fun products(businessId: Long): Flow<List<Product>> =
@@ -321,13 +328,14 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "products", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteProduct(product: Product) {
-        productDao.delete(product)
+        val now = System.currentTimeMillis()
+        val tombstone = product.copy(deletedAt = now, updatedAt = now)
+        productDao.update(tombstone)
         product.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
-        cloudSync.onDelete(product.businessId, "products", product.id.toString())
+        cloudSync.onUpsert(product.businessId, "products", product.id.toString(), tombstone)
     }
 
     override fun staffList(businessId: Long): Flow<List<Staff>> =
@@ -367,13 +375,14 @@ class DigiRepositoryImpl @Inject constructor(
         cloudSync.onUpsert(updated.businessId, "staff", updated.id.toString(), updated)
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteStaff(staff: Staff) {
-        staffDao.delete(staff)
+        val now = System.currentTimeMillis()
+        val tombstone = staff.copy(deletedAt = now, updatedAt = now)
+        staffDao.update(tombstone)
         staff.imageLocalPath?.let { path ->
             runCatching { File(path).delete() }
         }
-        cloudSync.onDelete(staff.businessId, "staff", staff.id.toString())
+        cloudSync.onUpsert(staff.businessId, "staff", staff.id.toString(), tombstone)
     }
 
     override fun staffPayments(staffId: Long): Flow<List<StaffPayment>> =
@@ -392,11 +401,13 @@ class DigiRepositoryImpl @Inject constructor(
         return id
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun deleteStaffPayment(payment: StaffPayment) {
+        val now = System.currentTimeMillis()
+        val tombstone = payment.copy(deletedAt = now, updatedAt = now)
         val businessId = staffDao.getById(payment.staffId).first()?.businessId
-        staffPaymentDao.delete(payment)
-        cloudSync.onDelete(businessId, "staffPayments", payment.id.toString())
+        // StaffPaymentDao has no update; use insert REPLACE with same id.
+        staffPaymentDao.insert(tombstone)
+        cloudSync.onUpsert(businessId, "staffPayments", payment.id.toString(), tombstone)
     }
 
     override fun observeAttendance(staffId: Long, from: Long, to: Long): Flow<List<StaffAttendance>> =
@@ -415,12 +426,15 @@ class DigiRepositoryImpl @Inject constructor(
         return id
     }
 
-    // Hard delete for now; Phase 3b.3 will switch to soft-delete.
     override suspend fun clearAttendance(staffId: Long, date: Long) {
-        staffAttendanceDao.clear(staffId, date)
+        val now = System.currentTimeMillis()
+        val existing = staffAttendanceDao.find(staffId, date)
+        staffAttendanceDao.softClear(staffId, date, now)
         val businessId = staffDao.getById(staffId).first()?.businessId
-        // We don't have the row id here; use a compound key so 3b.3 can reconcile.
-        cloudSync.onDelete(businessId, "staffAttendance", "$staffId-$date")
+        if (existing != null) {
+            val tombstone = existing.copy(deletedAt = now, updatedAt = now)
+            cloudSync.onUpsert(businessId, "staffAttendance", existing.id.toString(), tombstone)
+        }
     }
 
     override suspend fun adjustStock(productId: Long, delta: Double, reason: String?) {

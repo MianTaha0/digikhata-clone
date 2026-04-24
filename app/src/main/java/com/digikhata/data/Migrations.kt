@@ -3,6 +3,33 @@ package com.digikhata.data
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+val MIGRATION_8_9: Migration = object : Migration(8, 9) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        val tables = listOf(
+            "businesses",
+            "clients",
+            "transactions",
+            "cash_entries",
+            "expense_entries",
+            "invoices",
+            "invoice_items",
+            "products",
+            "stock_movements",
+            "staff",
+            "staff_payments",
+            "staff_attendance"
+        )
+        for (t in tables) {
+            db.execSQL("ALTER TABLE `$t` ADD COLUMN `deletedAt` INTEGER")
+            db.execSQL("ALTER TABLE `$t` ADD COLUMN `serverUpdatedAt` INTEGER")
+        }
+        // invoice_items, stock_movements, and staff_payments previously lacked updatedAt.
+        db.execSQL("ALTER TABLE `invoice_items` ADD COLUMN `updatedAt` INTEGER NOT NULL DEFAULT 0")
+        db.execSQL("ALTER TABLE `stock_movements` ADD COLUMN `updatedAt` INTEGER NOT NULL DEFAULT 0")
+        db.execSQL("ALTER TABLE `staff_payments` ADD COLUMN `updatedAt` INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
 val MIGRATION_7_8: Migration = object : Migration(7, 8) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(

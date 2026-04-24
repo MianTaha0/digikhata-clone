@@ -15,6 +15,6 @@ interface InvoiceItemDao {
     @Query("DELETE FROM invoice_items WHERE invoiceId = :id")
     suspend fun deleteByInvoice(id: Long)
 
-    @Query("SELECT * FROM invoice_items WHERE invoiceId = :id ORDER BY sortOrder ASC, id ASC")
+    @Query("SELECT * FROM invoice_items WHERE invoiceId = :id AND deletedAt IS NULL ORDER BY sortOrder ASC, id ASC")
     fun getByInvoice(id: Long): Flow<List<InvoiceItem>>
 }

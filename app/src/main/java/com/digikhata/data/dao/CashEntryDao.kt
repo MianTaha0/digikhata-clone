@@ -21,16 +21,16 @@ interface CashEntryDao {
     @Delete
     suspend fun delete(entry: CashEntry)
 
-    @Query("SELECT * FROM cash_entries WHERE id = :id")
+    @Query("SELECT * FROM cash_entries WHERE id = :id AND deletedAt IS NULL")
     fun getById(id: Long): Flow<CashEntry?>
 
-    @Query("SELECT * FROM cash_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to ORDER BY entryDate DESC, id DESC")
+    @Query("SELECT * FROM cash_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to AND deletedAt IS NULL ORDER BY entryDate DESC, id DESC")
     fun getInRange(bid: Long, from: Long, to: Long): Flow<List<CashEntry>>
 
     @Query(
         "SELECT COALESCE(SUM(CASE WHEN type=1 THEN amount ELSE 0 END),0) as totalIn, " +
                 "COALESCE(SUM(CASE WHEN type=0 THEN amount ELSE 0 END),0) as totalOut " +
-                "FROM cash_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to"
+                "FROM cash_entries WHERE businessId = :bid AND entryDate BETWEEN :from AND :to AND deletedAt IS NULL"
     )
     fun totalsForPeriod(bid: Long, from: Long, to: Long): Flow<CashTotals>
 }
