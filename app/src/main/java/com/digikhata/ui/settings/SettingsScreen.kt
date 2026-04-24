@@ -52,6 +52,9 @@ import com.digikhata.data.auth.AuthRepository
 import com.digikhata.data.auth.DigiUser
 import com.digikhata.data.entity.Business
 import com.digikhata.data.export.BackupExporter
+import com.digikhata.data.export.BackupImporter
+import com.digikhata.data.export.ImportResult
+import android.net.Uri as AndroidUri
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
@@ -78,7 +81,8 @@ private const val GITHUB_URL = "https://github.com/MianTaha0/digikhata-clone"
 class SettingsViewModel @Inject constructor(
     authRepo: AuthRepository,
     private val active: ActiveBookHolder,
-    private val exporter: BackupExporter
+    private val exporter: BackupExporter,
+    private val importer: BackupImporter
 ) : ViewModel() {
     val currentUser: StateFlow<DigiUser?> = authRepo.currentUser
     val business: StateFlow<Business?> = active.active.stateIn(
@@ -97,6 +101,21 @@ class SettingsViewModel @Inject constructor(
             onDone(file)
         }
     }
+
+    fun importBackup(context: Context, uri: AndroidUri, onDone: (ImportResult?) -> Unit) {
+        val biz = business.value
+        if (biz == null) { onDone(null); return }
+        viewModelScope.launch {
+            val result = try {
+                withContext(Dispatchers.IO) {
+                    context.contentResolver.openInputStream(uri)?.use { input ->
+                        importer.importZip(input, biz.id)
+                    }
+                }
+            } catch (_: Throwable) { null }
+            onDone(result)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -111,6 +130,20 @@ fun SettingsScreen(
     val currentUser by vm.currentUser.collectAsState()
     val business by vm.business.collectAsState()
     var exporting by remember { mutableStateOf(false) }
+    var importing by remember { mutableStateOf(false) }
+    var importResult by remember { mutableStateOf<ImportResult?>(null) }
+
+    val pickZip = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
+    ) { uri: AndroidUri? ->
+        if (uri != null) {
+            importing = true
+            vm.importBackup(context, uri) { result ->
+                importing = false
+                importResult = result
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -177,8 +210,16 @@ fun SettingsScreen(
             SettingsRow(
                 icon = Icons.Default.Restore,
                 title = "Restore from backup",
-                subtitle = "Import data from a previous backup",
-                comingSoon = true
+                subtitle = when {
+                    importing -> "Importing…"
+                    business == null -> "No active book"
+                    else -> "Pick a ZIP exported from DigiKhata"
+                },
+                onClick = {
+                    if (!importing && business != null) {
+                        pickZip.launch(arrayOf("application/zip", "application/x-zip-compressed", "*/*"))
+                    }
+                }
             )
 
             SectionHeader("Preferences")
@@ -232,6 +273,34 @@ fun SettingsScreen(
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
             )
         }
+    }
+
+    importResult?.let { r ->
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { importResult = null },
+            title = { Text("Import complete") },
+            text = {
+                Column {
+                    Text("Clients:      ${r.clientsImported}")
+                    Text("Transactions: ${r.transactionsImported}")
+                    Text("Cash entries: ${r.cashImported}")
+                    Text("Expenses:     ${r.expensesImported}")
+                    if (r.errors.isNotEmpty()) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "${r.errors.size} row(s) skipped.",
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { importResult = null }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 }
 
