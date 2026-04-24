@@ -9,6 +9,7 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import com.digikhata.data.reminders.DueInvoiceWorker
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -71,9 +72,35 @@ class SyncScheduler @Inject constructor(
             )
     }
 
+    /** Phase 4a.1: daily invoice due-reminder scan. */
+    fun scheduleDueReminders() {
+        val work = PeriodicWorkRequestBuilder<DueInvoiceWorker>(1, TimeUnit.DAYS)
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 60, TimeUnit.SECONDS)
+            .build()
+        WorkManager.getInstance(ctx)
+            .enqueueUniquePeriodicWork(
+                DUE_REMINDERS_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                work
+            )
+    }
+
+    /** One-shot scan — useful on book switch or after a sync pull. */
+    fun scheduleDueRemindersOnce() {
+        val work = OneTimeWorkRequestBuilder<DueInvoiceWorker>().build()
+        WorkManager.getInstance(ctx)
+            .enqueueUniqueWork(
+                DUE_REMINDERS_ONCE_WORK_NAME,
+                ExistingWorkPolicy.KEEP,
+                work
+            )
+    }
+
     companion object {
         const val UNIQUE_WORK_NAME = "digi-push"
         const val PULL_WORK_NAME = "digikhata_pull_once"
         const val PERIODIC_PULL_WORK_NAME = "digikhata_pull"
+        const val DUE_REMINDERS_WORK_NAME = "digikhata_due_reminders"
+        const val DUE_REMINDERS_ONCE_WORK_NAME = "digikhata_due_reminders_once"
     }
 }

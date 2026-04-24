@@ -30,6 +30,11 @@ class DigiKhataApp : Application(), Configuration.Provider {
 
     override fun onCreate() {
         super.onCreate()
+
+        // Phase 4a.1: keep a daily invoice due-reminder scan running.
+        com.digikhata.util.NotificationChannels.ensureCreated(this)
+        syncScheduler.scheduleDueReminders()
+
         // Phase 3b.2: drain the pending sync queue whenever a user is signed in.
         appScope.launch {
             authRepo.currentUser
