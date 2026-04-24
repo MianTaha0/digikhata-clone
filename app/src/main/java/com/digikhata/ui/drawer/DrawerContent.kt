@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -53,6 +54,7 @@ fun DrawerContent(
     val businesses by vm.businesses.collectAsState()
     val activeId by vm.activeId.collectAsState()
     val currentUser by vm.currentUser.collectAsState()
+    val pendingSyncCount by vm.pendingSyncCount.collectAsState()
 
     ModalDrawerSheet(drawerContainerColor = Color.White) {
         Box(
@@ -121,6 +123,7 @@ fun DrawerContent(
                 icon = Icons.Default.AccountCircle,
                 label = currentUser?.phoneNumber ?: "Account"
             ) { onOpenProfile() }
+            SyncStatusPill(pendingSyncCount)
         } else {
             DrawerRow(Icons.Default.CloudSync, "Sign in to sync") { onOpenSignIn() }
         }
@@ -129,6 +132,39 @@ fun DrawerContent(
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
         DrawerRow(Icons.Default.Settings, "Settings") { onOpenSettings() }
         Spacer(Modifier.height(8.dp))
+    }
+}
+
+@Composable
+private fun SyncStatusPill(pendingCount: Int) {
+    val amber = Color(0xFFB45309)
+    val green = Color(0xFF16A34A)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (pendingCount > 0) {
+            Text(
+                text = "Syncing $pendingCount changes…",
+                color = amber,
+                style = MaterialTheme.typography.bodySmall
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(green)
+            )
+            Spacer(Modifier.width(6.dp))
+            Text(
+                text = "Synced",
+                color = green,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
     }
 }
 

@@ -31,18 +31,28 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.digikhata.data.auth.AuthRepository
 import com.digikhata.data.auth.DigiUser
+import com.digikhata.data.sync.CloudSyncRepository
+import com.digikhata.data.sync.PushTrigger
 import com.digikhata.ui.components.digiTopBarColors
 import com.digikhata.ui.theme.DigiRed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import androidx.lifecycle.viewModelScope
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    cloudSync: CloudSyncRepository,
+    private val pushTrigger: PushTrigger
 ) : ViewModel() {
     val currentUser: StateFlow<DigiUser?> = repo.currentUser
+    val pendingCount: StateFlow<Int> = cloudSync.pendingCount
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
     fun signOut() = repo.signOut()
+    fun syncNow() = pushTrigger.schedulePush()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +62,7 @@ fun ProfileScreen(
     vm: ProfileViewModel = hiltViewModel()
 ) {
     val user by vm.currentUser.collectAsState()
+    val pending by vm.pendingCount.collectAsState()
 
     // If the user signs out, leave the screen
     LaunchedEffect(user) {
@@ -94,6 +105,20 @@ fun ProfileScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(Modifier.height(32.dp))
+            Text(
+                if (pending == 0) "All changes synced" else "$pending changes pending",
+                style = MaterialTheme.typography.bodyMedium,
+                color = if (pending == 0) MaterialTheme.colorScheme.onSurfaceVariant else DigiRed
+            )
+            Spacer(Modifier.height(8.dp))
+            Button(
+                onClick = { vm.syncNow() },
+                enabled = pending > 0,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Sync now")
+            }
+            Spacer(Modifier.height(16.dp))
             Button(
                 onClick = { vm.signOut() },
                 colors = ButtonDefaults.buttonColors(containerColor = DigiRed),

@@ -14,6 +14,7 @@ import com.digikhata.data.dao.StaffAttendanceDao
 import com.digikhata.data.dao.StaffDao
 import com.digikhata.data.dao.StaffPaymentDao
 import com.digikhata.data.dao.StockMovementDao
+import com.digikhata.data.dao.SyncOpDao
 import com.digikhata.data.dao.TransactionDao
 import com.digikhata.data.dao.TransactionImageDao
 import com.digikhata.data.entity.Business
@@ -28,6 +29,7 @@ import com.digikhata.data.entity.Staff
 import com.digikhata.data.entity.StaffAttendance
 import com.digikhata.data.entity.StaffPayment
 import com.digikhata.data.entity.StockMovement
+import com.digikhata.data.entity.SyncOp
 import com.digikhata.data.entity.TransactionImage
 import com.digikhata.data.entity.TxEntity
 
@@ -46,9 +48,10 @@ import com.digikhata.data.entity.TxEntity
         StockMovement::class,
         Staff::class,
         StaffPayment::class,
-        StaffAttendance::class
+        StaffAttendance::class,
+        SyncOp::class
     ],
-    version = 7,
+    version = 8,
     exportSchema = false
 )
 abstract class DigiDatabase : RoomDatabase() {
@@ -66,4 +69,5 @@ abstract class DigiDatabase : RoomDatabase() {
     abstract fun staffDao(): StaffDao
     abstract fun staffPaymentDao(): StaffPaymentDao
     abstract fun staffAttendanceDao(): StaffAttendanceDao
+    abstract fun syncOpDao(): SyncOpDao
 }

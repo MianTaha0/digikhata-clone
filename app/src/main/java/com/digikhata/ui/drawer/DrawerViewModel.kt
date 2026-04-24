@@ -6,6 +6,7 @@ import com.digikhata.ActiveBookHolder
 import com.digikhata.data.auth.AuthRepository
 import com.digikhata.data.auth.DigiUser
 import com.digikhata.data.entity.Business
+import com.digikhata.data.sync.CloudSyncRepository
 import com.digikhata.domain.repository.DigiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class DrawerViewModel @Inject constructor(
     repo: DigiRepository,
     private val active: ActiveBookHolder,
-    authRepo: AuthRepository
+    authRepo: AuthRepository,
+    cloudSync: CloudSyncRepository
 ) : ViewModel() {
     val businesses: StateFlow<List<Business>> = repo.businesses
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), emptyList())
@@ -25,6 +27,9 @@ class DrawerViewModel @Inject constructor(
     val activeId: StateFlow<Long?> = active.id
 
     val currentUser: StateFlow<DigiUser?> = authRepo.currentUser
+
+    val pendingSyncCount: StateFlow<Int> = cloudSync.pendingCount
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), 0)
 
     fun setActive(id: Long) = active.set(id)
 }
