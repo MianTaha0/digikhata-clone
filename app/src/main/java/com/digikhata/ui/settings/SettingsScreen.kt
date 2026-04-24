@@ -39,12 +39,26 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import android.content.Context
+import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.digikhata.ActiveBookHolder
 import com.digikhata.data.auth.AuthRepository
 import com.digikhata.data.auth.DigiUser
+import com.digikhata.data.entity.Business
+import com.digikhata.data.export.BackupExporter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,9 +76,27 @@ private const val GITHUB_URL = "https://github.com/MianTaha0/digikhata-clone"
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    authRepo: AuthRepository
+    authRepo: AuthRepository,
+    private val active: ActiveBookHolder,
+    private val exporter: BackupExporter
 ) : ViewModel() {
     val currentUser: StateFlow<DigiUser?> = authRepo.currentUser
+    val business: StateFlow<Business?> = active.active.stateIn(
+        viewModelScope,
+        kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5_000),
+        null
+    )
+
+    fun exportBackup(context: Context, onDone: (File?) -> Unit) {
+        val biz = business.value
+        if (biz == null) { onDone(null); return }
+        viewModelScope.launch {
+            val file = try {
+                withContext(Dispatchers.IO) { exporter.export(context, biz) }
+            } catch (_: Throwable) { null }
+            onDone(file)
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,6 +109,8 @@ fun SettingsScreen(
 ) {
     val context = LocalContext.current
     val currentUser by vm.currentUser.collectAsState()
+    val business by vm.business.collectAsState()
+    var exporting by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -113,8 +147,32 @@ fun SettingsScreen(
             SettingsRow(
                 icon = Icons.Default.Download,
                 title = "Export data",
-                subtitle = "Save a backup to device storage",
-                comingSoon = true
+                subtitle = when {
+                    exporting -> "Preparing backup…"
+                    business == null -> "No active book"
+                    else -> "Share a ZIP of CSVs (clients, cash, expenses, invoices, transactions)"
+                },
+                onClick = {
+                    if (!exporting && business != null) {
+                        exporting = true
+                        vm.exportBackup(context) { file ->
+                            exporting = false
+                            if (file != null) {
+                                val uri = FileProvider.getUriForFile(
+                                    context,
+                                    context.packageName + ".provider",
+                                    file
+                                )
+                                val send = Intent(Intent.ACTION_SEND).apply {
+                                    type = "application/zip"
+                                    putExtra(Intent.EXTRA_STREAM, uri)
+                                    addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                }
+                                context.startActivity(Intent.createChooser(send, "Share backup"))
+                            }
+                        }
+                    }
+                }
             )
             SettingsRow(
                 icon = Icons.Default.Restore,
