@@ -55,6 +55,7 @@ fun DrawerContent(
     val activeId by vm.activeId.collectAsState()
     val currentUser by vm.currentUser.collectAsState()
     val pendingSyncCount by vm.pendingSyncCount.collectAsState()
+    val lastPullAt by vm.lastPullAt.collectAsState()
 
     ModalDrawerSheet(drawerContainerColor = Color.White) {
         Box(
@@ -123,7 +124,7 @@ fun DrawerContent(
                 icon = Icons.Default.AccountCircle,
                 label = currentUser?.phoneNumber ?: "Account"
             ) { onOpenProfile() }
-            SyncStatusPill(pendingSyncCount)
+            SyncStatusPill(pendingSyncCount, lastPullAt)
         } else {
             DrawerRow(Icons.Default.CloudSync, "Sign in to sync") { onOpenSignIn() }
         }
@@ -136,35 +137,56 @@ fun DrawerContent(
 }
 
 @Composable
-private fun SyncStatusPill(pendingCount: Int) {
+private fun SyncStatusPill(pendingCount: Int, lastPullAt: Long) {
     val amber = Color(0xFFB45309)
     val green = Color(0xFF16A34A)
-    Row(
+    val grey = MaterialTheme.colorScheme.onSurfaceVariant
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 52.dp, end = 16.dp, bottom = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(start = 52.dp, end = 16.dp, bottom = 8.dp)
     ) {
-        if (pendingCount > 0) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            if (pendingCount > 0) {
+                Text(
+                    text = "Syncing $pendingCount changes…",
+                    color = amber,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(green)
+                )
+                Spacer(Modifier.width(6.dp))
+                Text(
+                    text = "Synced",
+                    color = green,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+        val label = formatLastPull(lastPullAt)
+        if (label != null) {
             Text(
-                text = "Syncing $pendingCount changes…",
-                color = amber,
-                style = MaterialTheme.typography.bodySmall
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .background(green)
-            )
-            Spacer(Modifier.width(6.dp))
-            Text(
-                text = "Synced",
-                color = green,
+                text = label,
+                color = grey,
                 style = MaterialTheme.typography.bodySmall
             )
         }
+    }
+}
+
+private fun formatLastPull(ts: Long): String? {
+    if (ts <= 0L) return null
+    val diffSec = ((System.currentTimeMillis() - ts) / 1000L).coerceAtLeast(0L)
+    return when {
+        diffSec < 60 -> "Last synced: just now"
+        diffSec < 3600 -> "Last synced: ${diffSec / 60} min ago"
+        diffSec < 86400 -> "Last synced: ${diffSec / 3600} hr ago"
+        else -> "Last synced: ${diffSec / 86400} d ago"
     }
 }
 
