@@ -2,6 +2,12 @@ package com.digikhata.ui.detail
 
 import android.content.Intent
 import android.net.Uri
+import androidx.core.content.FileProvider
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.rememberCoroutineScope
+import com.digikhata.util.LedgerPdfGenerator
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -66,10 +73,12 @@ fun ClientDetailScreen(
     val business by vm.business.collectAsState()
     val currency = business?.currency ?: "Pakistan Rupee-Rs"
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
 
     var addSheetType by remember { mutableStateOf<Int?>(null) }
     var detailTx by remember { mutableStateOf<TxEntity?>(null) }
     var showReminder by remember { mutableStateOf(false) }
+    var exporting by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -86,6 +95,45 @@ fun ClientDetailScreen(
                             context.startActivity(intent)
                         }
                     }) { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "WhatsApp") }
+                    IconButton(
+                        onClick = {
+                            val biz = business ?: return@IconButton
+                            val cli = client ?: return@IconButton
+                            if (txs.isEmpty() || exporting) return@IconButton
+                            exporting = true
+                            scope.launch {
+                                val ordered = txs.sortedBy { it.entryDate }
+                                val from = ordered.first().entryDate
+                                val to = ordered.last().entryDate
+                                val file = withContext(Dispatchers.IO) {
+                                    LedgerPdfGenerator.generate(
+                                        context = context,
+                                        business = biz,
+                                        client = cli,
+                                        transactions = ordered,
+                                        openingBalance = 0.0,
+                                        fromDate = from,
+                                        toDate = to,
+                                        currency = currency
+                                    )
+                                }
+                                exporting = false
+                                if (file != null) {
+                                    val uri = FileProvider.getUriForFile(
+                                        context,
+                                        context.packageName + ".provider",
+                                        file
+                                    )
+                                    val send = Intent(Intent.ACTION_SEND).apply {
+                                        type = "application/pdf"
+                                        putExtra(Intent.EXTRA_STREAM, uri)
+                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                    }
+                                    context.startActivity(Intent.createChooser(send, "Share ledger"))
+                                }
+                            }
+                        }
+                    ) { Icon(Icons.Default.FileDownload, contentDescription = "Export PDF") }
                     IconButton(onClick = { showReminder = true }) {
                         Icon(Icons.Default.Notifications, contentDescription = "Reminder")
                     }
