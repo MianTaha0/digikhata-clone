@@ -62,6 +62,7 @@ import com.digikhata.ui.search.SearchScreen
 import com.digikhata.ui.settings.SettingsScreen
 import com.digikhata.ui.auth.SignInScreen
 import com.digikhata.ui.auth.ProfileScreen
+import com.digikhata.ui.reports.ReportsScreen
 import com.digikhata.ui.supplier.SupplierListScreen
 import com.digikhata.ui.theme.DigiRed
 import com.digikhata.ui.components.digiTopBarColors
@@ -138,6 +139,10 @@ fun DigiApp() {
                 onOpenProfile = {
                     scope.launch { drawerState.close() }
                     navController.navigate(Routes.PROFILE)
+                },
+                onOpenReports = {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(Routes.REPORTS)
                 }
             )
         }
@@ -315,6 +320,9 @@ fun DigiApp() {
                 }
                 composable(Routes.PROFILE) {
                     ProfileScreen(onBack = { navController.popBackStack() })
+                }
+                composable(Routes.REPORTS) {
+                    ReportsScreen(onBack = { navController.popBackStack() })
                 }
                 composable(
                     Routes.STAFF_DETAIL_PATTERN,

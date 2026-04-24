@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.Settings
@@ -49,6 +50,7 @@ fun DrawerContent(
     onOpenSettings: () -> Unit = {},
     onOpenSignIn: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
+    onOpenReports: () -> Unit = {},
     vm: DrawerViewModel = hiltViewModel()
 ) {
     val businesses by vm.businesses.collectAsState()
@@ -128,6 +130,7 @@ fun DrawerContent(
         } else {
             DrawerRow(Icons.Default.CloudSync, "Sign in to sync") { onOpenSignIn() }
         }
+        DrawerRow(Icons.Default.BarChart, "Reports") { onOpenReports() }
         DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
         DrawerRow(Icons.Default.Share, "Share App") { onClose() }
         DrawerRow(Icons.Default.Star, "Rate App") { onClose() }

@@ -24,6 +24,7 @@ object Routes {
     const val SETTINGS = "settings"
     const val SIGN_IN = "signIn"
     const val PROFILE = "profile"
+    const val REPORTS = "reports"
 
     fun staffDetail(id: Long) = "staffDetail/$id"
     fun productDetail(id: Long) = "productDetail/$id"
