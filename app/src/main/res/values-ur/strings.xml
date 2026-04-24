@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ڈیجی کھاتہ</string>
+
+    <!-- Bottom nav tabs -->
+    <string name="tab_home">ہوم</string>
+    <string name="tab_cash">نقدی</string>
+    <string name="tab_stock">اسٹاک</string>
+    <string name="tab_bills">بل</string>
+    <string name="tab_expense">اخراجات</string>
+
+    <!-- Top bar -->
+    <string name="action_menu">مینو</string>
+    <string name="action_search">تلاش</string>
+    <string name="action_notifications">اطلاعات</string>
+    <string name="action_back">واپس</string>
+
+    <!-- Drawer -->
+    <string name="drawer_your_books">آپ کی کتابیں</string>
+    <string name="drawer_create_new_book">نئی کتاب بنائیں</string>
+    <string name="drawer_sign_in_to_sync">ہم آہنگی کے لیے سائن اِن کریں</string>
+    <string name="drawer_account">اکاؤنٹ</string>
+    <string name="drawer_reports">رپورٹس</string>
+    <string name="drawer_staff">ملازمین</string>
+    <string name="drawer_share_app">ایپ شیئر کریں</string>
+    <string name="drawer_rate_app">ایپ کو ریٹ کریں</string>
+    <string name="drawer_settings">ترتیبات</string>
+    <string name="sync_synced">ہم آہنگ</string>
+    <string name="sync_syncing_n_changes">%1$d تبدیلیاں ہم آہنگ ہو رہی ہیں…</string>
+    <string name="sync_last_just_now">آخری ہم آہنگی: ابھی</string>
+    <string name="sync_last_min_ago">آخری ہم آہنگی: %1$d منٹ پہلے</string>
+    <string name="sync_last_hr_ago">آخری ہم آہنگی: %1$d گھنٹے پہلے</string>
+    <string name="sync_last_d_ago">آخری ہم آہنگی: %1$d دن پہلے</string>
+
+    <!-- Settings -->
+    <string name="settings_title">ترتیبات</string>
+    <string name="settings_section_sync">ہم آہنگی اور بیک اپ</string>
+    <string name="settings_section_preferences">ترجیحات</string>
+    <string name="settings_section_about">بارے میں</string>
+    <string name="settings_cloud_sync">کلاؤڈ ہم آہنگی</string>
+    <string name="settings_signed_in_as">سائن اِن: %1$s</string>
+    <string name="settings_sign_in_to_sync_sub">تمام ڈیوائسز پر ہم آہنگی کے لیے سائن اِن کریں</string>
+    <string name="settings_export">ڈیٹا ایکسپورٹ کریں</string>
+    <string name="settings_export_preparing">بیک اپ تیار ہو رہا ہے…</string>
+    <string name="settings_export_no_book">کوئی فعال کتاب نہیں</string>
+    <string name="settings_export_sub">CSV فائلوں کا ZIP شیئر کریں (گاہک، نقدی، اخراجات، بل، لین دین)</string>
+    <string name="settings_restore">بیک اپ سے بحال کریں</string>
+    <string name="settings_restore_importing">درآمد ہو رہا ہے…</string>
+    <string name="settings_restore_sub">DigiKhata سے ایکسپورٹ کیا گیا ZIP منتخب کریں</string>
+    <string name="settings_language">زبان</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_urdu">اردو</string>
+    <string name="settings_language_hindi">हिन्दी</string>
+    <string name="settings_language_system">سسٹم ڈیفالٹ</string>
+    <string name="settings_language_picker_title">زبان منتخب کریں</string>
+    <string name="settings_version">ورژن</string>
+    <string name="settings_source_github">GitHub پر سورس کوڈ</string>
+    <string name="settings_share_app">یہ ایپ شیئر کریں</string>
+    <string name="settings_rate_app">ایپ کو ریٹ کریں</string>
+    <string name="settings_rate_app_sub">Play Store کھولیں</string>
+    <string name="settings_coming_soon">جلد</string>
+    <string name="settings_made_with">Jetpack Compose سے بنی</string>
+    <string name="settings_import_complete">درآمد مکمل</string>
+    <string name="settings_import_clients">گاہک: %1$d</string>
+    <string name="settings_import_transactions">لین دین: %1$d</string>
+    <string name="settings_import_cash">نقد اندراجات: %1$d</string>
+    <string name="settings_import_expenses">اخراجات: %1$d</string>
+    <string name="settings_import_skipped">%1$d سطر چھوڑ دی گئیں۔</string>
+    <string name="settings_ok">ٹھیک ہے</string>
+
+    <!-- Reports -->
+    <string name="reports_title">رپورٹس</string>
+    <string name="reports_empty">ابھی کوئی ڈیٹا نہیں — لین دین اور بل شامل کریں۔</string>
+    <string name="reports_sales">فروخت</string>
+    <string name="reports_expenses">اخراجات</string>
+    <string name="reports_cash">نقدی</string>
+    <string name="reports_this_month">اس ماہ</string>
+    <string name="reports_in_hand">ہاتھ میں</string>
+    <string name="reports_sales_last_30">فروخت — پچھلے 30 دن</string>
+    <string name="reports_top_customers">اہم گاہک</string>
+    <string name="reports_no_balances">دکھانے کے لیے کوئی بیلنس نہیں۔</string>
+    <string name="reports_will_get">لینا ہے</string>
+    <string name="reports_will_give">دینا ہے</string>
+
+    <!-- Client detail -->
+    <string name="tx_you_gave_plus">+ آپ نے دیا</string>
+    <string name="tx_you_got_plus">+ آپ کو ملا</string>
+    <string name="tx_no_transactions">ابھی کوئی لین دین نہیں</string>
+    <string name="tx_all_settled">سب طے ہو گیا</string>
+    <string name="tx_will_get">آپ کو لینا ہے</string>
+    <string name="tx_will_receive">آپ کو وصول ہو گا</string>
+    <string name="tx_will_give">آپ کو دینا ہے</string>
+    <string name="tx_will_pay">آپ کو ادا کرنا ہے</string>
+
+    <!-- Common -->
+    <string name="common_customer">گاہک</string>
+    <string name="common_export_pdf">PDF ایکسپورٹ</string>
+    <string name="common_reminder">یاد دہانی</string>
+    <string name="common_whatsapp">واٹس ایپ</string>
+    <string name="common_share_backup">بیک اپ شیئر کریں</string>
+    <string name="common_share_ledger">لیجر شیئر کریں</string>
+</resources>

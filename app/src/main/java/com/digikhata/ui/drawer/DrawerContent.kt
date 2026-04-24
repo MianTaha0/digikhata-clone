@@ -36,9 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.digikhata.R
 import com.digikhata.ui.theme.DigiRed
 
 @Composable
@@ -69,7 +71,7 @@ fun DrawerContent(
             Text("DigiKhata", color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.headlineSmall)
         }
         Text(
-            "Your Books",
+            stringResource(R.string.drawer_your_books),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(16.dp, 16.dp, 16.dp, 8.dp)
@@ -118,23 +120,23 @@ fun DrawerContent(
         ) {
             Icon(Icons.Default.Add, contentDescription = null, tint = DigiRed)
             Spacer(Modifier.width(12.dp))
-            Text("Create New Book", color = DigiRed, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.drawer_create_new_book), color = DigiRed, fontWeight = FontWeight.SemiBold)
         }
         HorizontalDivider()
         if (currentUser != null) {
             DrawerRow(
                 icon = Icons.Default.AccountCircle,
-                label = currentUser?.phoneNumber ?: "Account"
+                label = currentUser?.phoneNumber ?: stringResource(R.string.drawer_account)
             ) { onOpenProfile() }
             SyncStatusPill(pendingSyncCount, lastPullAt)
         } else {
-            DrawerRow(Icons.Default.CloudSync, "Sign in to sync") { onOpenSignIn() }
+            DrawerRow(Icons.Default.CloudSync, stringResource(R.string.drawer_sign_in_to_sync)) { onOpenSignIn() }
         }
-        DrawerRow(Icons.Default.BarChart, "Reports") { onOpenReports() }
-        DrawerRow(Icons.Default.Group, "Staff") { onOpenStaff() }
-        DrawerRow(Icons.Default.Share, "Share App") { onClose() }
-        DrawerRow(Icons.Default.Star, "Rate App") { onClose() }
-        DrawerRow(Icons.Default.Settings, "Settings") { onOpenSettings() }
+        DrawerRow(Icons.Default.BarChart, stringResource(R.string.drawer_reports)) { onOpenReports() }
+        DrawerRow(Icons.Default.Group, stringResource(R.string.drawer_staff)) { onOpenStaff() }
+        DrawerRow(Icons.Default.Share, stringResource(R.string.drawer_share_app)) { onClose() }
+        DrawerRow(Icons.Default.Star, stringResource(R.string.drawer_rate_app)) { onClose() }
+        DrawerRow(Icons.Default.Settings, stringResource(R.string.drawer_settings)) { onOpenSettings() }
         Spacer(Modifier.height(8.dp))
     }
 }

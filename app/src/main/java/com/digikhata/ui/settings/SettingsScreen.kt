@@ -71,9 +71,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.compose.ui.res.stringResource
 import com.digikhata.BuildConfig
+import com.digikhata.R
 import com.digikhata.ui.components.digiTopBarColors
 import com.digikhata.ui.theme.DigiRed
+import com.digikhata.util.LocaleManager
 
 private const val GITHUB_URL = "https://github.com/MianTaha0/digikhata-clone"
 
@@ -132,6 +135,8 @@ fun SettingsScreen(
     var exporting by remember { mutableStateOf(false) }
     var importing by remember { mutableStateOf(false) }
     var importResult by remember { mutableStateOf<ImportResult?>(null) }
+    var showLangPicker by remember { mutableStateOf(false) }
+    var currentLang by remember { mutableStateOf(LocaleManager.current()) }
 
     val pickZip = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.OpenDocument()
@@ -148,10 +153,10 @@ fun SettingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Settings") },
+                title = { Text(stringResource(R.string.settings_title)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.action_back))
                     }
                 },
                 colors = digiTopBarColors()
@@ -165,25 +170,25 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            SectionHeader("Sync & Backup")
+            SectionHeader(stringResource(R.string.settings_section_sync))
             SettingsRow(
                 icon = Icons.Default.Cloud,
-                title = "Cloud Sync",
+                title = stringResource(R.string.settings_cloud_sync),
                 subtitle = if (currentUser != null)
-                    "Signed in as ${currentUser?.phoneNumber ?: ""}"
+                    stringResource(R.string.settings_signed_in_as, currentUser?.phoneNumber ?: "")
                 else
-                    "Sign in to sync across devices",
+                    stringResource(R.string.settings_sign_in_to_sync_sub),
                 onClick = {
                     if (currentUser != null) onProfile() else onSignIn()
                 }
             )
             SettingsRow(
                 icon = Icons.Default.Download,
-                title = "Export data",
+                title = stringResource(R.string.settings_export),
                 subtitle = when {
-                    exporting -> "Preparing backup…"
-                    business == null -> "No active book"
-                    else -> "Share a ZIP of CSVs (clients, cash, expenses, invoices, transactions)"
+                    exporting -> stringResource(R.string.settings_export_preparing)
+                    business == null -> stringResource(R.string.settings_export_no_book)
+                    else -> stringResource(R.string.settings_export_sub)
                 },
                 onClick = {
                     if (!exporting && business != null) {
@@ -209,11 +214,11 @@ fun SettingsScreen(
             )
             SettingsRow(
                 icon = Icons.Default.Restore,
-                title = "Restore from backup",
+                title = stringResource(R.string.settings_restore),
                 subtitle = when {
-                    importing -> "Importing…"
-                    business == null -> "No active book"
-                    else -> "Pick a ZIP exported from DigiKhata"
+                    importing -> stringResource(R.string.settings_restore_importing)
+                    business == null -> stringResource(R.string.settings_export_no_book)
+                    else -> stringResource(R.string.settings_restore_sub)
                 },
                 onClick = {
                     if (!importing && business != null) {
@@ -222,23 +227,28 @@ fun SettingsScreen(
                 }
             )
 
-            SectionHeader("Preferences")
+            SectionHeader(stringResource(R.string.settings_section_preferences))
             SettingsRow(
                 icon = Icons.Default.Language,
-                title = "Language",
-                subtitle = "English",
-                comingSoon = true
+                title = stringResource(R.string.settings_language),
+                subtitle = when (currentLang) {
+                    LocaleManager.Lang.SYSTEM -> stringResource(R.string.settings_language_system)
+                    LocaleManager.Lang.ENGLISH -> stringResource(R.string.settings_language_english)
+                    LocaleManager.Lang.URDU -> stringResource(R.string.settings_language_urdu)
+                    LocaleManager.Lang.HINDI -> stringResource(R.string.settings_language_hindi)
+                },
+                onClick = { showLangPicker = true }
             )
 
-            SectionHeader("About")
+            SectionHeader(stringResource(R.string.settings_section_about))
             SettingsRow(
                 icon = Icons.Default.Info,
-                title = "Version",
+                title = stringResource(R.string.settings_version),
                 subtitle = "${BuildConfig.VERSION_NAME} (build ${BuildConfig.VERSION_CODE})"
             )
             SettingsRow(
                 icon = Icons.Default.Code,
-                title = "Source on GitHub",
+                title = stringResource(R.string.settings_source_github),
                 subtitle = "MianTaha0/digikhata-clone",
                 onClick = {
                     context.startActivity(Intent(Intent.ACTION_VIEW, GITHUB_URL.toUri()))
@@ -246,7 +256,7 @@ fun SettingsScreen(
             )
             SettingsRow(
                 icon = Icons.Default.Share,
-                title = "Share this app",
+                title = stringResource(R.string.settings_share_app),
                 onClick = {
                     val share = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
@@ -257,14 +267,14 @@ fun SettingsScreen(
             )
             SettingsRow(
                 icon = Icons.Default.Star,
-                title = "Rate the app",
-                subtitle = "Open the Play Store listing",
+                title = stringResource(R.string.settings_rate_app),
+                subtitle = stringResource(R.string.settings_rate_app_sub),
                 comingSoon = true
             )
 
             Spacer(Modifier.height(24.dp))
             Text(
-                "Made with Jetpack Compose",
+                stringResource(R.string.settings_made_with),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.labelSmall,
                 modifier = Modifier
@@ -278,17 +288,17 @@ fun SettingsScreen(
     importResult?.let { r ->
         androidx.compose.material3.AlertDialog(
             onDismissRequest = { importResult = null },
-            title = { Text("Import complete") },
+            title = { Text(stringResource(R.string.settings_import_complete)) },
             text = {
                 Column {
-                    Text("Clients:      ${r.clientsImported}")
-                    Text("Transactions: ${r.transactionsImported}")
-                    Text("Cash entries: ${r.cashImported}")
-                    Text("Expenses:     ${r.expensesImported}")
+                    Text(stringResource(R.string.settings_import_clients, r.clientsImported))
+                    Text(stringResource(R.string.settings_import_transactions, r.transactionsImported))
+                    Text(stringResource(R.string.settings_import_cash, r.cashImported))
+                    Text(stringResource(R.string.settings_import_expenses, r.expensesImported))
                     if (r.errors.isNotEmpty()) {
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            "${r.errors.size} row(s) skipped.",
+                            stringResource(R.string.settings_import_skipped, r.errors.size),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodySmall
                         )
@@ -297,7 +307,53 @@ fun SettingsScreen(
             },
             confirmButton = {
                 androidx.compose.material3.TextButton(onClick = { importResult = null }) {
-                    Text("OK")
+                    Text(stringResource(R.string.settings_ok))
+                }
+            }
+        )
+    }
+
+    if (showLangPicker) {
+        val options = listOf(
+            LocaleManager.Lang.SYSTEM to stringResource(R.string.settings_language_system),
+            LocaleManager.Lang.ENGLISH to stringResource(R.string.settings_language_english),
+            LocaleManager.Lang.URDU to stringResource(R.string.settings_language_urdu),
+            LocaleManager.Lang.HINDI to stringResource(R.string.settings_language_hindi),
+        )
+        androidx.compose.material3.AlertDialog(
+            onDismissRequest = { showLangPicker = false },
+            title = { Text(stringResource(R.string.settings_language_picker_title)) },
+            text = {
+                Column {
+                    options.forEach { (lang, label) ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    currentLang = lang
+                                    LocaleManager.apply(lang)
+                                    showLangPicker = false
+                                }
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            androidx.compose.material3.RadioButton(
+                                selected = currentLang == lang,
+                                onClick = {
+                                    currentLang = lang
+                                    LocaleManager.apply(lang)
+                                    showLangPicker = false
+                                }
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(label)
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { showLangPicker = false }) {
+                    Text(stringResource(R.string.settings_ok))
                 }
             }
         )

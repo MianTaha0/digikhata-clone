@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">डिजीखाता</string>
+
+    <!-- Bottom nav tabs -->
+    <string name="tab_home">होम</string>
+    <string name="tab_cash">नकद</string>
+    <string name="tab_stock">स्टॉक</string>
+    <string name="tab_bills">बिल</string>
+    <string name="tab_expense">खर्च</string>
+
+    <!-- Top bar -->
+    <string name="action_menu">मेन्यू</string>
+    <string name="action_search">खोजें</string>
+    <string name="action_notifications">सूचनाएँ</string>
+    <string name="action_back">वापस</string>
+
+    <!-- Drawer -->
+    <string name="drawer_your_books">आपकी किताबें</string>
+    <string name="drawer_create_new_book">नई किताब बनाएँ</string>
+    <string name="drawer_sign_in_to_sync">सिंक करने के लिए साइन इन करें</string>
+    <string name="drawer_account">खाता</string>
+    <string name="drawer_reports">रिपोर्ट</string>
+    <string name="drawer_staff">स्टाफ़</string>
+    <string name="drawer_share_app">ऐप शेयर करें</string>
+    <string name="drawer_rate_app">ऐप को रेट करें</string>
+    <string name="drawer_settings">सेटिंग्स</string>
+    <string name="sync_synced">सिंक हो गया</string>
+    <string name="sync_syncing_n_changes">%1$d बदलाव सिंक हो रहे हैं…</string>
+    <string name="sync_last_just_now">अंतिम सिंक: अभी</string>
+    <string name="sync_last_min_ago">अंतिम सिंक: %1$d मिनट पहले</string>
+    <string name="sync_last_hr_ago">अंतिम सिंक: %1$d घंटे पहले</string>
+    <string name="sync_last_d_ago">अंतिम सिंक: %1$d दिन पहले</string>
+
+    <!-- Settings -->
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_sync">सिंक और बैकअप</string>
+    <string name="settings_section_preferences">प्राथमिकताएँ</string>
+    <string name="settings_section_about">के बारे में</string>
+    <string name="settings_cloud_sync">क्लाउड सिंक</string>
+    <string name="settings_signed_in_as">साइन इन: %1$s</string>
+    <string name="settings_sign_in_to_sync_sub">सभी उपकरणों पर सिंक के लिए साइन इन करें</string>
+    <string name="settings_export">डेटा एक्सपोर्ट करें</string>
+    <string name="settings_export_preparing">बैकअप तैयार हो रहा है…</string>
+    <string name="settings_export_no_book">कोई सक्रिय किताब नहीं</string>
+    <string name="settings_export_sub">CSV फ़ाइलों का ZIP शेयर करें (ग्राहक, नकद, खर्च, बिल, लेन-देन)</string>
+    <string name="settings_restore">बैकअप से पुनर्स्थापित करें</string>
+    <string name="settings_restore_importing">आयात हो रहा है…</string>
+    <string name="settings_restore_sub">DigiKhata से एक्सपोर्ट किया ZIP चुनें</string>
+    <string name="settings_language">भाषा</string>
+    <string name="settings_language_english">English</string>
+    <string name="settings_language_urdu">اردو</string>
+    <string name="settings_language_hindi">हिन्दी</string>
+    <string name="settings_language_system">सिस्टम डिफ़ॉल्ट</string>
+    <string name="settings_language_picker_title">भाषा चुनें</string>
+    <string name="settings_version">संस्करण</string>
+    <string name="settings_source_github">GitHub पर सोर्स कोड</string>
+    <string name="settings_share_app">यह ऐप शेयर करें</string>
+    <string name="settings_rate_app">ऐप को रेट करें</string>
+    <string name="settings_rate_app_sub">Play Store खोलें</string>
+    <string name="settings_coming_soon">जल्द</string>
+    <string name="settings_made_with">Jetpack Compose से बना</string>
+    <string name="settings_import_complete">आयात पूरा हुआ</string>
+    <string name="settings_import_clients">ग्राहक: %1$d</string>
+    <string name="settings_import_transactions">लेन-देन: %1$d</string>
+    <string name="settings_import_cash">नकद प्रविष्टियाँ: %1$d</string>
+    <string name="settings_import_expenses">खर्च: %1$d</string>
+    <string name="settings_import_skipped">%1$d पंक्तियाँ छोड़ दी गईं।</string>
+    <string name="settings_ok">ठीक है</string>
+
+    <!-- Reports -->
+    <string name="reports_title">रिपोर्ट</string>
+    <string name="reports_empty">अभी कोई डेटा नहीं — लेन-देन और बिल जोड़ें।</string>
+    <string name="reports_sales">बिक्री</string>
+    <string name="reports_expenses">खर्च</string>
+    <string name="reports_cash">नकद</string>
+    <string name="reports_this_month">इस महीने</string>
+    <string name="reports_in_hand">हाथ में</string>
+    <string name="reports_sales_last_30">बिक्री — पिछले 30 दिन</string>
+    <string name="reports_top_customers">मुख्य ग्राहक</string>
+    <string name="reports_no_balances">दिखाने के लिए कोई बैलेंस नहीं।</string>
+    <string name="reports_will_get">लेना है</string>
+    <string name="reports_will_give">देना है</string>
+
+    <!-- Client detail -->
+    <string name="tx_you_gave_plus">+ आपने दिया</string>
+    <string name="tx_you_got_plus">+ आपको मिला</string>
+    <string name="tx_no_transactions">अभी कोई लेन-देन नहीं</string>
+    <string name="tx_all_settled">सब सेटल हो गया</string>
+    <string name="tx_will_get">आपको लेना है</string>
+    <string name="tx_will_receive">आपको मिलेगा</string>
+    <string name="tx_will_give">आपको देना है</string>
+    <string name="tx_will_pay">आपको चुकाना है</string>
+
+    <!-- Common -->
+    <string name="common_customer">ग्राहक</string>
+    <string name="common_export_pdf">PDF एक्सपोर्ट</string>
+    <string name="common_reminder">रिमाइंडर</string>
+    <string name="common_whatsapp">व्हाट्सएप</string>
+    <string name="common_share_backup">बैकअप शेयर करें</string>
+    <string name="common_share_ledger">लेजर शेयर करें</string>
+</resources>
