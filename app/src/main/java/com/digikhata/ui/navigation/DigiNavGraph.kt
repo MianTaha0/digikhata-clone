@@ -86,6 +86,14 @@ fun DigiApp() {
     val bootstrapVm: BootstrapViewModel = hiltViewModel()
     val needsBook by bootstrapVm.needsBook.collectAsState()
 
+    // Phase 4a.3: route to invoice detail when launched from a reminder notification.
+    val pendingInvoiceId by PendingNavIntent.pendingInvoiceId.collectAsState()
+    LaunchedEffect(pendingInvoiceId) {
+        val id = pendingInvoiceId ?: return@LaunchedEffect
+        PendingNavIntent.pendingInvoiceId.value = null
+        navController.navigate(Routes.invoiceDetail(id))
+    }
+
     LaunchedEffect(needsBook) {
         if (needsBook == true) {
             navController.navigate(Routes.CREATE_BOOK) {
