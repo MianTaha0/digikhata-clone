@@ -3,6 +3,8 @@ package com.digikhata.di
 import com.digikhata.data.repository.DigiRepositoryImpl
 import com.digikhata.data.sync.CloudSyncRepository
 import com.digikhata.data.sync.CloudSyncRepositoryImpl
+import com.digikhata.data.sync.PullEngine
+import com.digikhata.data.sync.PullEngineImpl
 import com.digikhata.data.sync.PushTrigger
 import com.digikhata.data.sync.SyncScheduler
 import com.digikhata.domain.repository.DigiRepository
@@ -26,4 +28,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindPushTrigger(impl: SyncScheduler): PushTrigger
+
+    @Binds
+    @Singleton
+    abstract fun bindPullEngine(impl: PullEngineImpl): PullEngine
 }

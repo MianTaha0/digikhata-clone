@@ -3,9 +3,11 @@ package com.digikhata.data.sync
 import android.content.Context
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
@@ -39,7 +41,39 @@ class SyncScheduler @Inject constructor(
             .enqueueUniqueWork(UNIQUE_WORK_NAME, ExistingWorkPolicy.APPEND_OR_REPLACE, work)
     }
 
+    fun schedulePull() {
+        val work = OneTimeWorkRequestBuilder<PullWorker>()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+            .build()
+        WorkManager.getInstance(ctx)
+            .enqueueUniqueWork(PULL_WORK_NAME, ExistingWorkPolicy.KEEP, work)
+    }
+
+    fun schedulePeriodicPull() {
+        val work = PeriodicWorkRequestBuilder<PullWorker>(15, TimeUnit.MINUTES)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 30, TimeUnit.SECONDS)
+            .build()
+        WorkManager.getInstance(ctx)
+            .enqueueUniquePeriodicWork(
+                PERIODIC_PULL_WORK_NAME,
+                ExistingPeriodicWorkPolicy.KEEP,
+                work
+            )
+    }
+
     companion object {
         const val UNIQUE_WORK_NAME = "digi-push"
+        const val PULL_WORK_NAME = "digikhata_pull_once"
+        const val PERIODIC_PULL_WORK_NAME = "digikhata_pull"
     }
 }

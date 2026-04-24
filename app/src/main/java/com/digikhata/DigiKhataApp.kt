@@ -36,7 +36,12 @@ class DigiKhataApp : Application(), Configuration.Provider {
                 .map { it?.uid }
                 .distinctUntilChanged()
                 .collect { uid ->
-                    if (uid != null) syncScheduler.schedulePush()
+                    if (uid != null) {
+                        syncScheduler.schedulePush()
+                        // Phase 3b.3: pull immediately and keep a 15-min periodic worker alive.
+                        syncScheduler.schedulePull()
+                        syncScheduler.schedulePeriodicPull()
+                    }
                 }
         }
     }
